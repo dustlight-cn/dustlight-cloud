@@ -21,6 +21,7 @@
     "vuex": "^4.0.1"
   },
   "devDependencies": {
+    "@dustlight/quasar-app-extension-auth-ext": "*",
     "@quasar/app": "^3.0.0",
     "@types/node": "^12.20.21"
   },

@@ -1,0 +1,9 @@
+{
+  "@dustlight/auth-ext": {
+    "authorizationUri": "https://accounts.dustlight.cn/authorize",
+    "apiEndpoint": "https://api.dustlight.cn",
+    "clientId": "test",
+    "tokenType": "jwt",
+    "scope": ""
+  }
+}
