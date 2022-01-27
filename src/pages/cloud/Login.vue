@@ -3,7 +3,7 @@
     <!-- OAuth2 Implict 授权模式  -->
     <auth-login
       :index="{
-        path: 'test1',
+        path: '/',
       }"
       :help="{
       path:'/help'
