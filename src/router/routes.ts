@@ -1,4 +1,6 @@
-import { RouteRecordRaw } from 'vue-router';
+import {RouteRecordRaw} from 'vue-router';
+import apps from '../apps'
+import {computeRoutes} from "src/apps/App";
 
 const routes: RouteRecordRaw[] = [
   {
@@ -17,5 +19,8 @@ const routes: RouteRecordRaw[] = [
     component: () => import('pages/Error404.vue'),
   },
 ];
+
+// @ts-ignore
+routes[0].children?.push(...computeRoutes(apps))
 
 export default routes;
