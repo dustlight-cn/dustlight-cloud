@@ -5,7 +5,7 @@ export default async () => {
 
   try {
     await import(
-      /* webpackInclude: /(de|en-US)\.js$/ */
+      /* webpackInclude: /(zh-CN|en-US)\.js$/ */
     'quasar/lang/' + langIso
       )
       .then(lang => {
@@ -14,5 +14,6 @@ export default async () => {
   } catch (err) {
     // Requested Quasar Language Pack does not exist,
     // let's not break the app, so catching error
+    console.error(err)
   }
 }

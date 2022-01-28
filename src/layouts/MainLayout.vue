@@ -1,21 +1,35 @@
 <template>
-  <q-layout view="lHh Lpr lFf">
+  <q-layout view="hHh Lpr fFf">
     <q-header elevated>
       <q-toolbar>
-        <q-btn
-          flat
-          dense
-          round
-          icon="menu"
-          aria-label="Menu"
-          @click="leftDrawerOpen=!leftDrawerOpen"
-        />
-
         <q-toolbar-title>
-          Quasar App
+
+          <q-btn no-caps icon="img:/icons/favicon-128x128.png" flat :label="$t('title')"/>
+          <q-btn-dropdown flat :label="$t('services')">
+            <q-list>
+              <q-item clickable v-close-popup @click="onItemClick">
+                <q-item-section>
+                  <q-item-label>Photos</q-item-label>
+                </q-item-section>
+              </q-item>
+
+              <q-item clickable v-close-popup @click="onItemClick">
+                <q-item-section>
+                  <q-item-label>Videos</q-item-label>
+                </q-item-section>
+              </q-item>
+
+              <q-item clickable v-close-popup @click="onItemClick">
+                <q-item-section>
+                  <q-item-label>Articles</q-item-label>
+                </q-item-section>
+              </q-item>
+            </q-list>
+          </q-btn-dropdown>
         </q-toolbar-title>
 
-        <auth-avatar-button :loginPage="{name:'login'}"/>
+        <language-selector/>
+        <auth-avatar-button color="secondary" :loginPage="{name:'login'}"/>
       </q-toolbar>
     </q-header>
 
@@ -37,12 +51,19 @@
     <q-page-container>
       <router-view />
     </q-page-container>
+
+    <q-footer style="z-index: 0">
+      <Footer/>
+    </q-footer>
   </q-layout>
 </template>
 
 <script>
+import Footer from "../components/common/Footer";
+import LanguageSelector from "../components/common/LanguageSelector";
 export default {
   name: 'MainLayout',
+  components: {LanguageSelector, Footer},
   data(){
     return {
       leftDrawerOpen: false

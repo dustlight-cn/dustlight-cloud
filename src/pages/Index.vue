@@ -1,9 +1,10 @@
 <template>
   <q-page class="row items-center justify-evenly">
-    <auth-user-context v-slot="{user,token}">
-      {{ $t("success") }}
-      <auth-avatar :user="user"/>
-    </auth-user-context>
+    <img
+      alt="Auth logo"
+      style="max-width: 600px"
+      src="~assets/dustlight.png"
+    >
   </q-page>
 </template>
 

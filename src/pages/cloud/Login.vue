@@ -1,5 +1,5 @@
 <template>
-  <q-page padding>
+  <q-page class="row items-center justify-evenly">
     <!-- OAuth2 Implict 授权模式  -->
     <auth-login
       :index="{
