@@ -4,7 +4,7 @@
       <q-toolbar>
         <q-toolbar-title>
 
-          <q-btn no-caps icon="img:/icons/favicon-128x128.png" flat :label="$t('title')"/>
+          <q-btn :to="{name:'index'}" no-caps icon="img:/icons/favicon-128x128.png" flat :label="$t('title')"/>
           <q-btn-dropdown flat :label="$t('services')">
             <q-list>
               <q-item clickable v-close-popup @click="onItemClick">
