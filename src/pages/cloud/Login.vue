@@ -5,9 +5,6 @@
       :index="{
         path: '/',
       }"
-      :help="{
-      path:'/help'
-      }"
     >
     </auth-login>
   </q-page>

@@ -6,5 +6,9 @@ export default {
   success: '操作成功',
 
   title: "光尘云",
-  services: "云服务"
+  services: "云服务",
+
+  signIn: "登录",
+  signOut: "退出登录",
+  signOutSuccess: "成功退出登录"
 };

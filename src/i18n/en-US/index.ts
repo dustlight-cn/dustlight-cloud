@@ -6,5 +6,9 @@ export default {
   success: 'Action was successful',
 
   title: "Dustlight Cloud",
-  services: "Services"
+  services: "Services",
+
+  signIn: "Sign In",
+  signOut: "Sign Out",
+  signOutSuccess: "Successfully signed out"
 };

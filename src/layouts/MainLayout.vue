@@ -16,7 +16,8 @@
         </q-toolbar-title>
 
         <language-selector class="q-mr-sm"/>
-        <auth-avatar-button color="secondary" :loginPage="{name:'login'}"/>
+        <auth-avatar-button color="secondary" :loginPage="{name:'login'}"
+                            :text="{signIn: $t('signIn'),signOut: $t('signOut'),signOutSuccess: $t('signOutSuccess')}"/>
       </q-toolbar>
     </q-header>
 
