@@ -2,10 +2,10 @@
 // so you can safely delete all default props below
 
 export default {
-  title: "测试",
+  title: "函数服务",
 
   menu:{
-    "index": "首页",
+    "index": "函数",
     "test": "测试"
   }
 };

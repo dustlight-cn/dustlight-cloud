@@ -3,7 +3,7 @@ import i18n from "./i18n"
 import routes from "./routes"
 
 const app: App = {
-  name: "test2",
+  name: "fun",
   routes: routes,
   i18n: i18n,
   enabled: true,
@@ -12,7 +12,7 @@ const app: App = {
       name: "index",
       routeName: "index",
       i18nKey: "menu.index",
-      icon: "home"
+      icon: "code"
     },
     {
       name: "test",

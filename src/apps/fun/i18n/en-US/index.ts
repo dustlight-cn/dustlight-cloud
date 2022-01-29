@@ -2,10 +2,10 @@
 // so you can safely delete all default props below
 
 export default {
-  title: "Test",
+  title: "Function",
 
   menu:{
-    "index": "Index",
+    "index": "Functions",
     "test": "Test"
   }
 };
