@@ -1,4 +1,5 @@
 import {RouteRecordRaw} from "vue-router";
+import app from "src/apps/test/app";
 
 /**
  * 应用类
@@ -50,7 +51,11 @@ function computeRoute(app: App, prefix: string = "/"): RouteRecordRaw[] {
   return []
 }
 
-// 输出路由
+/**
+ * 输出路由
+ * @param apps
+ * @param prefix
+ */
 export function computeRoutes(apps: App[], prefix: string = "/"): RouteRecordRaw[] {
   let routes: RouteRecordRaw[] = []
   if (apps) {
@@ -59,4 +64,24 @@ export function computeRoutes(apps: App[], prefix: string = "/"): RouteRecordRaw
     }
   }
   return routes
+}
+
+
+/**
+ * 注入 i18n
+ * @param apps
+ * @param message
+ */
+export function injectI18ns(apps: App[], message: any) {
+  if (apps) {
+    for (let i in apps) {
+      let i18n = apps[i].i18n
+      for (let k in i18n) {
+        if (!message[k])
+          message[k] = {}
+        // @ts-ignore
+        message[k][app.name] = i18n[k]
+      }
+    }
+  }
 }

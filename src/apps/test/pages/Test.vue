@@ -1,12 +1,14 @@
 <template>
   <div>
-    GGboy{{$options}}
+    {{$appt("title")}}
   </div>
 </template>
 
 <script>
 export default {
-  name: "Test"
+  name: "Test",
+  mounted() {
+  }
 }
 </script>
 

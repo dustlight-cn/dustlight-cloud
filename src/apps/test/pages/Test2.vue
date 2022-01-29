@@ -1,6 +1,6 @@
 <template>
   <div>
-    GGboy2{{$options}}
+    {{$appt("title")}}
   </div>
 </template>
 
@@ -8,7 +8,6 @@
 export default {
   name: "Test2",
   mounted() {
-    console.log(this)
   }
 }
 </script>

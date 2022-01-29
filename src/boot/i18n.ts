@@ -15,4 +15,9 @@ export default boot(({ app }) => {
 
   // Set i18n instance on app
   app.use(i18n);
+
+  // 添加全局函数 $appt 用于国际化文本
+  app.config.globalProperties.$appt = function (key: string, ...args: any) {
+    return this.$t(this.$options.app + "." + key, ...args)
+  }
 });
