@@ -44,6 +44,9 @@ function computeRoute(app: App, prefix: string = "/"): RouteRecordRaw[] {
   if (app && app.routes) {
     apply(app.routes, app)
     app.routes.forEach(route => {
+      // @ts-ignore
+      let name: string = (route.name instanceof Symbol) ? route.name.toString() : route.name;
+      route.name = app.name + "/" + name
       route.path = prefix + app.name + route.path
     })
     return app.routes
