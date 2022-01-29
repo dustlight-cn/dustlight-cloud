@@ -1,14 +1,14 @@
 <template>
-  <adaptive-layout :title="$appt('menu.index')">
+  <client-required-adaptive-layout :title="$appt('menu.index')">
     嘻嘻哈哈
-  </adaptive-layout>
+  </client-required-adaptive-layout>
 </template>
 
 <script>
-import AdaptiveLayout from "../../../components/container/AdaptiveLayout";
+import ClientRequiredAdaptiveLayout from "../../../components/container/ClientRequiredAdaptiveLayout";
 export default {
   name: "Index",
-  components: {AdaptiveLayout},
+  components: {ClientRequiredAdaptiveLayout},
   mounted() {
   }
 }

@@ -1,10 +1,12 @@
 export interface ExampleStateInterface {
   prop: boolean;
+  test: Object
 }
 
 function state(): ExampleStateInterface {
   return {
-    prop: false
+    prop: false,
+    test: {}
   }
 };
 

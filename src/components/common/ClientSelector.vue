@@ -19,6 +19,7 @@
 
 <script type="ts">
 import {Configuration, ClientsApi} from "@dustlight/auth-client-axios-js"
+import {useStore} from 'src/store';
 
 export default {
   name: "ClientSelector",
@@ -63,12 +64,19 @@ export default {
     },
     "$route.query.cid"() {
       this.loadClient(this.$route.query.cid)
+    },
+    currentClient() {
+      console.log(this.$store.state.exampleModule.test)
+      // this.$store.watch()
+      this.$store.commit("exampleModule/someMutation",this.currentClient)
     }
   },
   methods: {
     onSelected(client) {
-      if (client == null)
+      if (client == null) {
         this.$refs.menu.hide()
+        this.currentClient = null
+      }
       if (this.currentClient && this.currentClient.cid == client.cid) {
         this.$refs.menu.hide()
       }
@@ -85,6 +93,9 @@ export default {
         if (!this.clientsApi || !this.user_) {
           this.loadClientFlag = clientId
         }
+        if (clientId == null) {
+          this.currentClient = null
+        }
         return
       }
 
@@ -100,8 +111,7 @@ export default {
     }
   },
   mounted() {
-    if (!(this.currentClient && this.currentClient.cid == this.$route.query.cid))
-      this.loadClient(this.$route.query.cid)
+    this.loadClient(this.$route.query.cid)
   }
 }
 </script>
