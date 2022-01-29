@@ -28,7 +28,7 @@
           </q-btn-dropdown>
         </q-toolbar-title>
 
-        <language-selector/>
+        <language-selector class="q-mr-sm"/>
         <auth-avatar-button color="secondary" :loginPage="{name:'login'}"/>
       </q-toolbar>
     </q-header>
