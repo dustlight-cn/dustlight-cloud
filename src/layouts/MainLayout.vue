@@ -2,9 +2,8 @@
   <q-layout view="hHh Lpr fFf">
     <q-header elevated>
       <q-toolbar>
-
         <q-btn :to="{name:'index'}" no-caps icon="img:/icons/favicon-128x128.png" flat :label="$t('title')"/>
-        <q-btn-dropdown no-caps flat :label="$t('services')">
+        <q-btn-dropdown no-caps flat :label="$q.screen.lt.md && isAppPage?$t(currentApp.name + '.title'):$t('services')">
           <q-list>
             <q-item v-for="(app,index) in apps" :key="index" clickable v-close-popup :to="{path: '/' + app.name}">
               <q-item-section>
@@ -20,9 +19,7 @@
 
       <!-- 顶部导航栏 -->
       <q-tabs inline-label v-if="$q.screen.lt.md && isAppPage" v-model="tab">
-        <div class="q-pa-sm text-subtitle2">
-          {{ $t(currentApp.name + ".title") }}
-        </div>
+
         <q-space/>
         <q-route-tab no-caps
                      v-if="isMenuEnabled"
