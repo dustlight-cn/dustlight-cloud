@@ -2,20 +2,18 @@
   <q-layout view="hHh Lpr fFf">
     <q-header elevated>
       <q-toolbar>
-        <q-toolbar-title>
-          <q-btn :to="{name:'index'}" no-caps icon="img:/icons/favicon-128x128.png" flat :label="$t('title')"/>
-          <q-btn-dropdown no-caps flat :label="$t('services')">
-            <q-list>
-              <q-item v-for="(app,index) in apps" :key="index" clickable v-close-popup :to="{path: '/' + app.name}">
-                <q-item-section>
-                  <q-item-label>{{ $t(app.name + ".title") }}</q-item-label>
-                </q-item-section>
-              </q-item>
-            </q-list>
-          </q-btn-dropdown>
-        </q-toolbar-title>
 
-        <language-selector class="q-mr-sm"/>
+        <q-btn :to="{name:'index'}" no-caps icon="img:/icons/favicon-128x128.png" flat :label="$t('title')"/>
+        <q-btn-dropdown no-caps flat :label="$t('services')">
+          <q-list>
+            <q-item v-for="(app,index) in apps" :key="index" clickable v-close-popup :to="{path: '/' + app.name}">
+              <q-item-section>
+                <q-item-label>{{ $t(app.name + ".title") }}</q-item-label>
+              </q-item-section>
+            </q-item>
+          </q-list>
+        </q-btn-dropdown>
+        <q-space/>
         <auth-avatar-button color="secondary" :loginPage="{name:'login'}"
                             :text="{signIn: $t('signIn'),signOut: $t('signOut'),signOutSuccess: $t('signOutSuccess')}"/>
       </q-toolbar>
