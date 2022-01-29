@@ -9,7 +9,7 @@ export class App {
   public routes: RouteRecordRaw[] = [] // 应用路由
   public i18n: Object | undefined | null | never // 国际化
   public enabled: boolean | undefined | null | never = true // 是否启用
-  public menu: Menu[] | undefined | null | never
+  public menus: Menu[] | undefined | null | never
 }
 
 export class Menu {

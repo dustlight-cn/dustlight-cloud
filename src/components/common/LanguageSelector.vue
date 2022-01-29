@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div style="min-width: 100px">
     <q-btn-dropdown no-caps dense flat :label="$q.lang.nativeName">
       <q-list>
         <q-item v-for="(item,index) in langOptions"

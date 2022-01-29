@@ -7,18 +7,18 @@ const app: App = {
   routes: routes,
   i18n: i18n,
   enabled: true,
-  menu: [
+  menus: [
     {
       name: "index",
       routeName: "index",
-      i18nKey: null,
-      icon: null
+      i18nKey: "menu.index",
+      icon: "home"
     },
     {
       name: "test",
       routeName: "test",
-      i18nKey: null,
-      icon: null
+      i18nKey: "menu.test",
+      icon: "apps"
     }
   ]
 }
