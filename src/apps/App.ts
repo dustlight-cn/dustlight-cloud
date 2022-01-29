@@ -1,5 +1,4 @@
 import {RouteRecordRaw} from "vue-router";
-import app from "src/apps/test/app";
 
 /**
  * 应用类
@@ -86,6 +85,7 @@ export function computeRoutes(apps: App[], prefix: string = "/"): RouteRecordRaw
 export function injectI18ns(apps: App[], message: any) {
   if (apps) {
     for (let i in apps) {
+      let app = apps[i]
       let i18n = apps[i].i18n
       for (let k in i18n) {
         if (!message[k])
