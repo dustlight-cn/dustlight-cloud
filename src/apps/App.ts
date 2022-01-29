@@ -7,8 +7,16 @@ import app from "src/apps/test/app";
 export class App {
   public name: String | string = "" // 应用名称
   public routes: RouteRecordRaw[] = [] // 应用路由
-  public i18n: Object | undefined | null // 国际化
-  public enabled: boolean | undefined | null = true // 是否启用
+  public i18n: Object | undefined | null | never // 国际化
+  public enabled: boolean | undefined | null | never = true // 是否启用
+  public menu: Menu[] | undefined | null | never
+}
+
+export class Menu {
+  public name: String | string = ""
+  public i18nKey: String | string | undefined | null | never = ""
+  public routeName: String | string = ""
+  public icon: String | string | undefined | null | never = ""
 }
 
 // 注入上下文
