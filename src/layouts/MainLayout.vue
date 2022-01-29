@@ -3,25 +3,12 @@
     <q-header elevated>
       <q-toolbar>
         <q-toolbar-title>
-
           <q-btn :to="{name:'index'}" no-caps icon="img:/icons/favicon-128x128.png" flat :label="$t('title')"/>
-          <q-btn-dropdown flat :label="$t('services')">
+          <q-btn-dropdown no-caps flat :label="$t('services')">
             <q-list>
-              <q-item clickable v-close-popup @click="onItemClick">
+              <q-item v-for="(app,index) in apps" :key="index" clickable v-close-popup :to="{path: '/' + app.name}">
                 <q-item-section>
-                  <q-item-label>Photos</q-item-label>
-                </q-item-section>
-              </q-item>
-
-              <q-item clickable v-close-popup @click="onItemClick">
-                <q-item-section>
-                  <q-item-label>Videos</q-item-label>
-                </q-item-section>
-              </q-item>
-
-              <q-item clickable v-close-popup @click="onItemClick">
-                <q-item-section>
-                  <q-item-label>Articles</q-item-label>
+                  <q-item-label>{{ $t(app.name + ".title") }}</q-item-label>
                 </q-item-section>
               </q-item>
             </q-list>
@@ -61,12 +48,15 @@
 <script>
 import Footer from "../components/common/Footer";
 import LanguageSelector from "../components/common/LanguageSelector";
+import apps from "../apps";
+
 export default {
   name: 'MainLayout',
   components: {LanguageSelector, Footer},
-  data(){
+  data() {
     return {
-      leftDrawerOpen: false
+      leftDrawerOpen: false,
+      apps: apps
     }
   }
 }

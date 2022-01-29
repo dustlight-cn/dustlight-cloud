@@ -5,5 +5,6 @@ export default {
   failed: '操作失败',
   success: '操作成功',
 
-  title: "光尘云"
+  title: "光尘云",
+  services: "云服务"
 };

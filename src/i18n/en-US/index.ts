@@ -5,5 +5,6 @@ export default {
   failed: 'Action failed',
   success: 'Action was successful',
 
-  title: "Dustlight Cloud"
+  title: "Dustlight Cloud",
+  services: "Services"
 };
