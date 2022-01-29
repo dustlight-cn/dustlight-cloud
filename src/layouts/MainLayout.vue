@@ -3,7 +3,8 @@
     <q-header elevated>
       <q-toolbar>
         <q-btn :to="{name:'index'}" no-caps icon="img:/icons/favicon-128x128.png" flat :label="$t('title')"/>
-        <q-btn-dropdown no-caps flat :label="$q.screen.lt.md && isAppPage?$t(currentApp.name + '.title'):$t('services')">
+        <q-btn-dropdown no-caps flat
+                        :label="$q.screen.lt.md && isAppPage?$t(currentApp.name + '.title'):$t('services')">
           <q-list>
             <q-item v-for="(app,index) in apps" :key="index" clickable v-close-popup :to="{path: '/' + app.name}">
               <q-item-section>
@@ -13,6 +14,8 @@
           </q-list>
         </q-btn-dropdown>
         <q-space/>
+
+        <client-selector v-if="isAppPage"/>
         <auth-avatar-button color="secondary" :loginPage="{name:'login'}"
                             :text="{signIn: $t('signIn'),signOut: $t('signOut'),signOutSuccess: $t('signOutSuccess')}"/>
       </q-toolbar>
@@ -58,7 +61,7 @@
     </q-drawer>
 
     <q-page-container>
-      <router-view ref="page"/>
+      <router-view/>
     </q-page-container>
 
     <q-footer style="z-index: 0">
@@ -71,10 +74,11 @@
 import Footer from "../components/common/Footer";
 import LanguageSelector from "../components/common/LanguageSelector";
 import apps from "../apps";
+import ClientSelector from "../components/common/ClientSelector";
 
 export default {
   name: 'MainLayout',
-  components: {LanguageSelector, Footer},
+  components: {ClientSelector, LanguageSelector, Footer},
   data() {
     return {
       leftDrawerOpen: false,
