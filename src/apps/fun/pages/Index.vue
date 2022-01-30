@@ -4,22 +4,46 @@
     v-slot="{client,user,token}">
     {{ "", client_ = client, user_ = user, token_ = token }}
 
-    <q-list bordered separator v-if="functions">
-      <q-item v-for="(fun,index) in functions" :key="index">
+    <q-list bordered separator v-if="loading">
+      <q-item v-for="index in 5" :key="index">
         <q-item-section avatar>
           <q-icon name="code"/>
         </q-item-section>
         <q-item-section>
-          <q-item-label>{{ fun.name }}</q-item-label>
           <q-item-label>
-            <q-badge>{{ fun.runtime }}</q-badge>
+            <q-skeleton type="text" width="2em"/>
+          </q-item-label>
+          <q-item-label>
+            <q-badge>
+              <q-item-label>
+                <q-skeleton type="text" width="1em"/>
+              </q-item-label>
+            </q-badge>
           </q-item-label>
         </q-item-section>
         <q-item-section side>
-          {{ fun.createdAt }}
+          <q-item-label><q-skeleton type="text" width="3em"/> </q-item-label>
         </q-item-section>
       </q-item>
     </q-list>
+    <div v-else>
+      <q-list bordered separator v-if="functions">
+        <q-item v-for="(fun,index) in functions" :key="index">
+          <q-item-section avatar>
+            <q-icon name="code"/>
+          </q-item-section>
+          <q-item-section>
+            <q-item-label>{{ fun.name }}</q-item-label>
+            <q-item-label>
+              <q-badge>{{ fun.runtime }}</q-badge>
+            </q-item-label>
+          </q-item-section>
+          <q-item-section side>
+            {{ $moment(fun.createdAt) }}
+          </q-item-section>
+        </q-item>
+      </q-list>
+    </div>
   </client-required-adaptive-layout>
 </template>
 
