@@ -6,6 +6,6 @@ export default {
 
   menu:{
     "index": "Functions",
-    "test": "Test"
+    "create": "Create"
   }
 };

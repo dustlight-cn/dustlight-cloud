@@ -6,6 +6,6 @@ export default {
 
   menu:{
     "index": "函数",
-    "test": "测试"
+    "create": "创建"
   }
 };

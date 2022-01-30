@@ -15,10 +15,10 @@ const app: App = {
       icon: "code"
     },
     {
-      name: "test",
-      routeName: "test",
-      i18nKey: "menu.test",
-      icon: "apps"
+      name: "create",
+      routeName: "create",
+      i18nKey: "menu.create",
+      icon: "cloud"
     }
   ]
 }
