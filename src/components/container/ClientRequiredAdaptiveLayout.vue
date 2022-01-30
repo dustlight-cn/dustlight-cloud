@@ -1,6 +1,6 @@
 <template>
   <adaptive-layout :title="title">
-    <slot v-if="$route.query.cid"/>
+    <slot v-if="$store.state.client.client" :client="$store.state.client.client"/>
     <div v-else class="row items-center justify-evenly">
       <div>
         <div>

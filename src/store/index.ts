@@ -31,7 +31,7 @@ declare module '@vue/runtime-core' {
     $store: VuexStore<StateInterface>
   }
 }
-import exampleModule from './module-example'
+import client from './client'
 // provide typings for `useStore` helper
 export const storeKey: InjectionKey<VuexStore<StateInterface>> = Symbol('vuex-key')
 
@@ -39,7 +39,7 @@ export default store(function (/* { ssrContext } */) {
   const Store = createStore<StateInterface>({
     modules: {
       // example
-      exampleModule
+      client
     },
 
     // enable strict mode (adds overhead!)

@@ -62,31 +62,23 @@ export default {
         this.loadClient(this.loadClientFlag)
       }
     },
-    "$route.query.cid"() {
-      this.loadClient(this.$route.query.cid)
-    },
-    currentClient() {
-      console.log(this.$store.state.exampleModule.test)
-      // this.$store.watch()
-      this.$store.commit("exampleModule/someMutation",this.currentClient)
+    "$store.state.client.client"(){
+      this.currentClient = this.$store.state.client.client
     }
   },
   methods: {
     onSelected(client) {
       if (client == null) {
         this.$refs.menu.hide()
-        this.currentClient = null
+        this.$store.commit("client/setClient",null)
+        return
       }
       if (this.currentClient && this.currentClient.cid == client.cid) {
         this.$refs.menu.hide()
       }
-      this.currentClient = client
-      let query = JSON.parse(JSON.stringify(this.$route.query))
-      query.cid = client.cid
-      this.$router.push({
-        path: this.$route.path,
-        query: query
-      })
+      this.$store.commit("client/setClient",client)
+
+      this.$refs.menu.hide()
     },
     loadClient(clientId) {
       if (this.loading || this.clientsApi == null || clientId == null || this.user_ == null) {
@@ -94,7 +86,7 @@ export default {
           this.loadClientFlag = clientId
         }
         if (clientId == null) {
-          this.currentClient = null
+          this.$store.commit("client/setClient",null)
         }
         return
       }
@@ -102,7 +94,7 @@ export default {
       this.loading = true
       this.clientsApi.getUserClient(this.user_.uid, clientId)
         .then(res => {
-          this.currentClient = res.data
+          this.$store.commit("client/setClient",res.data)
         })
         .finally(() => {
           this.loading = false

@@ -2,8 +2,8 @@ import { MutationTree } from 'vuex';
 import { ExampleStateInterface } from './state';
 
 const mutation: MutationTree<ExampleStateInterface> = {
-  someMutation(state: ExampleStateInterface, p) {
-    state.test = p
+  setClient(state: ExampleStateInterface, client) {
+    state.client = client
   }
 };
 
