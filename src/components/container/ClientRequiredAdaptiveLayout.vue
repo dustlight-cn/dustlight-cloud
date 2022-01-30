@@ -8,12 +8,14 @@
                 :token="token"/>
           <div v-else >
             <div class="text-center">
-              <div>
-                <q-icon color="primary" size="10em" name="apps"/>
+              <q-icon color="grey" name="apps" size="5em"/>
+
+              <div class="flex flex-center q-mt-md text-h6 text-grey text-center">
+                {{ $t("unselectClientTips") }}
               </div>
-              <div>
-                Select Client
-                <client-selector/>
+              <div class="text-left">
+                <user-client-list :user="user" :token="token"
+                                  @onSelected="(client)=>$store.commit('client/setClient',client)"/>
               </div>
             </div>
           </div>
