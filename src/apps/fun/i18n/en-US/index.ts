@@ -5,6 +5,14 @@ export default {
   title: "Function",
   delete: "Delete Function",
   deleteMessage: "Are you sure to delete function \"{name}\"?",
+
+  create: "Create Function",
+
+  functionName: "Function Name",
+  functionRuntime: "Runtime",
+  functionHandler: "Handler",
+  functionFile: "Program File",
+
   menu: {
     "index": "Functions",
     "create": "Create"
