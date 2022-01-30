@@ -23,14 +23,14 @@
       </q-item>
     </q-list>
     <div v-else>
-      <q-list bordered separator v-if="functions">
+      <q-list bordered separator v-if="functions && functions.length > 0">
         <q-item v-for="(fun,index) in functions" :key="index">
           <q-item-section avatar>
             <q-icon name="code"/>
           </q-item-section>
           <q-item-section>
             <q-item-label>
-              {{fun.name}}
+              {{ fun.name }}
               <q-badge>{{ fun.runtime }}</q-badge>
             </q-item-label>
             <q-item-label caption>
@@ -41,10 +41,14 @@
             <q-btn round flat dense no-caps icon="link" @click="()=>openFunction(fun)" :disable="!config"/>
           </q-item-section>
           <q-item-section side>
-            <q-btn round dense icon="delete" flat/>
+            <q-btn :loading="functionDeleting.indexOf(fun.name) > -1" round dense icon="delete" flat
+                   @click="()=>deleteFunction(fun)"/>
           </q-item-section>
         </q-item>
       </q-list>
+      <div class="text-center" v-else>
+        {{ $appt("empty") }}
+      </div>
     </div>
   </client-required-adaptive-layout>
 </template>
@@ -67,7 +71,8 @@ export default {
       functionsApi: null,
       functions: [],
       loading: false,
-      config: null
+      config: null,
+      functionDeleting: []
     }
   },
   watch: {
@@ -104,6 +109,23 @@ export default {
           })
           .finally(() => this.loading = false)
       }
+    },
+    deleteFunction(fun) {
+      this.$q.dialog({
+        title: this.$appt("delete"),
+        message: this.$appt("deleteMessage", fun.name),
+        cancel: true
+      }).onOk(() => {
+        this.functionDeleting.push(fun.name)
+        this.functionsApi.deleteFunction(fun.name, this.client_.cid)
+          .then(() => {
+            this.functions.splice(this.functions.indexOf(fun), 1)
+          })
+          .finally(() => {
+            this.functionDeleting.splice(this.functionDeleting.indexOf(fun.name), 1)
+          })
+      })
+
     }
   },
   mounted() {
