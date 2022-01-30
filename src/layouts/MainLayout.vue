@@ -2,8 +2,8 @@
   <q-layout view="hHh Lpr fFf">
     <q-header elevated>
       <q-toolbar>
-        <q-btn :to="{name:'index'}" no-caps icon="img:/icons/favicon-128x128.png" flat :label="$t('title')"/>
-        <q-btn-dropdown no-caps flat
+        <logo class="q-mr-sm"/>
+        <q-btn-dropdown dense no-caps flat
                         :label="$q.screen.lt.md && isAppPage?$t(currentApp.name + '.title'):$t('services')">
           <q-list>
             <q-item v-for="(app,index) in apps" :key="index" clickable v-close-popup :to="{path: '/' + app.name}">
@@ -75,10 +75,11 @@ import Footer from "../components/common/Footer";
 import LanguageSelector from "../components/common/LanguageSelector";
 import apps from "../apps";
 import ClientSelector from "../components/common/ClientSelector";
+import Logo from "../components/common/Logo";
 
 export default {
   name: 'MainLayout',
-  components: {ClientSelector, LanguageSelector, Footer},
+  components: {Logo, ClientSelector, LanguageSelector, Footer},
   data() {
     return {
       leftDrawerOpen: false,
