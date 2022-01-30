@@ -3,9 +3,10 @@
 
 export default {
   title: "函数服务",
-
-  menu:{
+  delete: "删除函数",
+  deleteMessage: "是否要删除函数 ”{name}“ ？",
+  menu: {
     "index": "函数",
-    "test": "测试"
+    "create": "创建"
   }
 };

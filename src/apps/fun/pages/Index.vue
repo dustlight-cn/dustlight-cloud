@@ -113,7 +113,7 @@ export default {
     deleteFunction(fun) {
       this.$q.dialog({
         title: this.$appt("delete"),
-        message: this.$appt("deleteMessage", fun.name),
+        message: this.$appt("deleteMessage", fun),
         cancel: true
       }).onOk(() => {
         this.functionDeleting.push(fun.name)

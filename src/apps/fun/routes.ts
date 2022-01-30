@@ -1,5 +1,4 @@
 import {RouteRecordRaw} from "vue-router";
-import Test from './pages/Test.vue'
 
 const routes: RouteRecordRaw[] = [
   {
@@ -8,9 +7,9 @@ const routes: RouteRecordRaw[] = [
     path: "/"
   },
   {
-    name: "test",
-    component: Test,
-    path: "/test"
+    name: "create",
+    component: () => import("./pages/Create.vue"),
+    path: "/create"
   }
 ]
 

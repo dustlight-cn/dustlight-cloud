@@ -3,9 +3,10 @@
 
 export default {
   title: "Function",
-
-  menu:{
+  delete: "Delete Function",
+  deleteMessage: "Are you sure to delete function \"{name}\"?",
+  menu: {
     "index": "Functions",
-    "test": "Test"
+    "create": "Create"
   }
 };
