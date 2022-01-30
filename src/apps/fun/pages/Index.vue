@@ -55,10 +55,7 @@
 
 <script>
 import ClientRequiredAdaptiveLayout from "src/components/container/ClientRequiredAdaptiveLayout.vue";
-import {Configuration, FunctionsApi, ConfigsApi} from '@dustlight/fun-client-axios-js'
 import {openURL} from "quasar";
-
-const configsApi = new ConfigsApi(new Configuration({basePath: "https://fun.dustlight.cn"}))
 
 export default {
   name: "Index",
@@ -68,32 +65,25 @@ export default {
       user_: null,
       token_: null,
       client_: null,
-      functionsApi: null,
       functions: [],
       loading: false,
-      config: null,
       functionDeleting: []
+    }
+  },
+  computed: {
+    functionsApi() {
+      return this.$options.ext.functionsApi(this.token_.access_token)
+    },
+    configsApi() {
+      return this.$options.ext.configsApi
     }
   },
   watch: {
     token_() {
-      if (this.token_ == null) {
-        this.functionsApi = null
-        return
-      }
-      let cfg = new Configuration({
-        basePath: "https://fun.dustlight.cn",
-        accessToken: this.token_.access_token
-      })
-      this.functionsApi = new FunctionsApi(cfg)
+      this.loadFunctions()
     },
     client_() {
       this.loadFunctions()
-    },
-    functionsApi() {
-      if (this.functionsApi) {
-        this.loadFunctions()
-      }
     }
   },
   methods: {
@@ -129,7 +119,7 @@ export default {
     }
   },
   mounted() {
-    configsApi.getConfiguration()
+    this.configsApi.getConfiguration()
       .then(res => {
         this.config = res.data
       })

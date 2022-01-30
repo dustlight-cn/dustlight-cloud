@@ -8,7 +8,8 @@ export class App {
   public routes: RouteRecordRaw[] = [] // 应用路由
   public i18n: Object | undefined | null | never // 国际化
   public enabled: boolean | undefined | null | never = true // 是否启用
-  public menus: Menu[] | undefined | null | never
+  public menus: Menu[] | undefined | null | never // 菜单
+  public ext: any
 }
 
 export class Menu {
@@ -22,6 +23,7 @@ export class Menu {
 function apply(routes: RouteRecordRaw[], app: App) {
   function inject(obj: any, app: App) {
     obj.app = app.name
+    obj.ext = app.ext
     return obj
   }
 
