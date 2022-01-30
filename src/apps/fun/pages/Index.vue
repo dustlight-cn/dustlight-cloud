@@ -12,17 +12,13 @@
         <q-item-section>
           <q-item-label>
             <q-skeleton type="text" width="2em"/>
-          </q-item-label>
-          <q-item-label>
             <q-badge>
-              <q-item-label>
-                <q-skeleton type="text" width="1em"/>
-              </q-item-label>
+              <q-skeleton type="text" width="1em"/>
             </q-badge>
           </q-item-label>
         </q-item-section>
         <q-item-section side>
-          <q-item-label><q-skeleton type="text" width="3em"/> </q-item-label>
+          <q-item-label><q-skeleton type="text" width="2em" /> </q-item-label>
         </q-item-section>
       </q-item>
     </q-list>
@@ -33,13 +29,19 @@
             <q-icon name="code"/>
           </q-item-section>
           <q-item-section>
-            <q-item-label>{{ fun.name }}</q-item-label>
             <q-item-label>
+              {{fun.name}}
               <q-badge>{{ fun.runtime }}</q-badge>
+            </q-item-label>
+            <q-item-label caption>
+              {{ $moment(fun.createdAt) }}
             </q-item-label>
           </q-item-section>
           <q-item-section side>
-            {{ $moment(fun.createdAt) }}
+            <q-btn round flat dense no-caps icon="link" @click="()=>openFunction(fun)" :disable="!config"/>
+          </q-item-section>
+          <q-item-section side>
+            <q-btn round dense icon="delete" flat/>
           </q-item-section>
         </q-item>
       </q-list>
@@ -49,7 +51,10 @@
 
 <script>
 import ClientRequiredAdaptiveLayout from "src/components/container/ClientRequiredAdaptiveLayout.vue";
-import {Configuration, FunctionsApi} from '@dustlight/fun-client-axios-js'
+import {Configuration, FunctionsApi, ConfigsApi} from '@dustlight/fun-client-axios-js'
+import {openURL} from "quasar";
+
+const configsApi = new ConfigsApi(new Configuration({basePath: "https://fun.dustlight.cn"}))
 
 export default {
   name: "Index",
@@ -61,7 +66,8 @@ export default {
       client_: null,
       functionsApi: null,
       functions: [],
-      loading: false
+      loading: false,
+      config: null
     }
   },
   watch: {
@@ -86,6 +92,9 @@ export default {
     }
   },
   methods: {
+    openFunction(fun) {
+      openURL(this.config.hostFormat.replace("%s", this.client_.cid) + "/" + fun.name)
+    },
     loadFunctions() {
       if (this.functionsApi && !this.loading) {
         this.loading = true
@@ -98,6 +107,10 @@ export default {
     }
   },
   mounted() {
+    configsApi.getConfiguration()
+      .then(res => {
+        this.config = res.data
+      })
   }
 }
 </script>
