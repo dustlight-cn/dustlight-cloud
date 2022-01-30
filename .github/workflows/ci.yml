@@ -1,0 +1,32 @@
+name: Build and Push
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+
+  build:
+
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - name: Setup Node.js environment
+        uses: actions/setup-node@v2.1.5
+      - name: Build
+        run: |
+          npm i
+          sudo npm install -g @quasar/cli
+          quasar build
+      - name: Upload COS
+        uses: Bluefissure/tencent-cos-action@v0.1.1
+        with:
+          args: delete -r -f / && upload -r ./dist/spa/ /
+          secret_id: ${{ secrets.TENCENT_SECRET_ID }}
+          secret_key: ${{ secrets.TENCENT_SECRET_KEY }}
+          bucket: ${{ secrets.TENCENT_BUCKET }}
+          region: ap-guangzhou
+          accelerate: false
+
