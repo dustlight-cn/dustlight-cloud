@@ -29,6 +29,6 @@ jobs:
           SECRET_KEY: ${{ secrets.TENCENT_SECRET_KEY }}
           BUCKET: ${{ secrets.TENCENT_BUCKET }}
           REGION: ap-guangzhou
-        run: coscmd config -a $SECRET_ID -s SECRET_KEY -b $BUCKET -r $REGION
+        run: coscmd config -a $SECRET_ID -s $SECRET_KEY -b $BUCKET -r $REGION
       - name: Upload
         run: coscmd upload -rs --delete -f ./dist/spa/ /
