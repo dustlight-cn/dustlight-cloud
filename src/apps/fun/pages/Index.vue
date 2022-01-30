@@ -97,6 +97,7 @@ export default {
           .then(res => {
             this.functions = res.data
           })
+          .catch(this.$throw)
           .finally(() => this.loading = false)
       }
     },
@@ -111,6 +112,7 @@ export default {
           .then(() => {
             this.functions.splice(this.functions.indexOf(fun), 1)
           })
+          .catch(this.$throw)
           .finally(() => {
             this.functionDeleting.splice(this.functionDeleting.indexOf(fun.name), 1)
           })
@@ -123,6 +125,7 @@ export default {
       .then(res => {
         this.config = res.data
       })
+      .catch(this.$throw)
   }
 }
 </script>

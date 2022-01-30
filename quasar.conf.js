@@ -23,7 +23,8 @@ module.exports = configure(function (ctx) {
       'i18n',
       'axios',
       'quasar-lang-pack',
-      'moment'
+      'moment',
+      'error-handler'
     ],
 
     // https://quasar.dev/quasar-cli/quasar-conf-js#Property%3A-css
@@ -99,7 +100,9 @@ module.exports = configure(function (ctx) {
       // Quasar plugins
       plugins: [
         'LocalStorage',
-        'SessionStorage'
+        'SessionStorage',
+        "Dialog",
+        "Notify"
       ]
     },
 

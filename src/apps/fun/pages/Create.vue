@@ -71,6 +71,7 @@ export default {
         .then(res => {
           this.$router.push({name: this.$options.app + "/index"})
         })
+        .catch(this.$throw)
         .finally(() => {
           this.loading = false
         })
@@ -82,9 +83,11 @@ export default {
       }
       this.functionsApi.getRuntimes().then(res => {
         this.options = res.data
-      }).finally(() => {
-        update()
       })
+        .catch(this.$throw)
+        .finally(() => {
+          update()
+        })
     }
   },
   mounted() {
