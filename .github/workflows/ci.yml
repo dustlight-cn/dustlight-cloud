@@ -20,13 +20,15 @@ jobs:
           npm i
           sudo npm install -g @quasar/cli
           quasar build
-      - name: Upload COS
-        uses: Bluefissure/tencent-cos-action@v0.1.1
-        with:
-          args: delete -r -f / && upload -r ./dist/spa/ /
-          secret_id: ${{ secrets.TENCENT_SECRET_ID }}
-          secret_key: ${{ secrets.TENCENT_SECRET_KEY }}
-          bucket: ${{ secrets.TENCENT_BUCKET }}
-          region: ap-guangzhou
-          accelerate: true
 
+      - name: Setup coscmd
+        run: sudo pip install coscmd
+      - name: Config coscmd
+        env:
+          SECRET_ID: ${{ secrets.TENCENT_SECRET_ID }}
+          SECRET_KEY: ${{ secrets.TENCENT_SECRET_KEY }}
+          BUCKET: ${{ secrets.TENCENT_BUCKET }}
+          REGION: ap-guangzhou
+        run: coscmd config -a $SECRET_ID -s SECRET_KEY -b $BUCKET -r $REGION
+      - name: Upload
+        run: coscmd upload -rs --delete -f ./dist/spa/ /
