@@ -103,7 +103,7 @@ export default {
     }
   },
   mounted() {
-    this.loadClient(this.$route.query.cid)
+    this.currentClient = this.$store.state.client.client
   }
 }
 </script>

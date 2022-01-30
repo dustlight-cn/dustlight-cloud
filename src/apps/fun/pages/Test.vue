@@ -7,7 +7,7 @@
 </template>
 
 <script>
-import ClientRequiredAdaptiveLayout from "../../../components/container/ClientRequiredAdaptiveLayout";
+import ClientRequiredAdaptiveLayout from "src/components/container/ClientRequiredAdaptiveLayout";
 export default {
   name: "Test",
   components: {ClientRequiredAdaptiveLayout},
