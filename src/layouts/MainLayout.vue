@@ -16,7 +16,7 @@
         <q-space/>
 
         <client-selector v-if="isAppPage"/>
-        <auth-avatar-button color="secondary" :loginPage="{name:'login'}"
+        <auth-avatar-button color="secondary" :loginPage="{name:'login',query:{redirect_uri:this.$route.fullPath}}"
                             :text="{signIn: $t('signIn'),signOut: $t('signOut'),signOutSuccess: $t('signOutSuccess')}"/>
       </q-toolbar>
 

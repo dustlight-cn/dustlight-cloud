@@ -1,25 +1,35 @@
 <template>
-  <adaptive-layout :title="title">
-    <slot v-if="$store.state.client.client" :client="$store.state.client.client"/>
-    <div v-else class="row items-center justify-evenly">
-      <div>
-        <div>
-          <q-icon name="apps"/>
-        </div>
-        <div>
-          Client Required
-        </div>
-      </div>
-    </div>
-  </adaptive-layout>
+    <adaptive-layout :title="title">
+      <user-required>
+        <template v-slot:default="{user,token}">
+          <slot v-if="$store.state.client.client"
+                :client="$store.state.client.client"
+                :user="user"
+                :token="token"/>
+          <div v-else >
+            <div class="text-center">
+              <div>
+                <q-icon color="primary" size="10em" name="apps"/>
+              </div>
+              <div>
+                Select Client
+                <client-selector/>
+              </div>
+            </div>
+          </div>
+        </template>
+      </user-required>
+    </adaptive-layout>
 </template>
 
 <script>
 import AdaptiveLayout from "./AdaptiveLayout";
+import ClientSelector from "components/common/ClientSelector";
+import UserRequired from "components/common/UserRequired";
 
 export default {
   name: "ClientRequiredAdaptiveLayout",
-  components: {AdaptiveLayout},
+  components: {UserRequired, ClientSelector, AdaptiveLayout},
   props: {
     title: ""
   }

@@ -1,8 +1,9 @@
 <template>
   <client-required-adaptive-layout
     :title="$appt('menu.index')"
-    v-slot="{client}">
+    v-slot="{client,user}">
     {{ client }}
+    {{ user }}
   </client-required-adaptive-layout>
 </template>
 

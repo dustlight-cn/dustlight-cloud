@@ -10,5 +10,7 @@ export default {
 
   signIn: "登录",
   signOut: "退出登录",
-  signOutSuccess: "成功退出登录"
+  signOutSuccess: "成功退出登录",
+
+  unauthorizedTips: "要查看此内容，请登录您的账号"
 };

@@ -10,5 +10,7 @@ export default {
 
   signIn: "Sign In",
   signOut: "Sign Out",
-  signOutSuccess: "Successfully signed out"
+  signOutSuccess: "Successfully signed out",
+
+  unauthorizedTips: "Please Sign In to View This Content"
 };
