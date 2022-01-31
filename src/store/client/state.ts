@@ -1,5 +1,5 @@
 import {Client} from '@dustlight/auth-client-axios-js'
-import {SessionStorage} from "quasar";
+import {LocalStorage} from "quasar";
 
 export interface ExampleStateInterface {
   prop: boolean;
@@ -9,7 +9,7 @@ export interface ExampleStateInterface {
 function state(): ExampleStateInterface {
   return {
     prop: false,
-    client: SessionStorage.getItem<Client>('client')
+    client: LocalStorage.getItem<Client>('client')
   }
 };
 

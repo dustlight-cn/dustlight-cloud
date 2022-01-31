@@ -1,11 +1,11 @@
 import { MutationTree } from 'vuex';
 import {ExampleStateInterface} from './state';
-import {SessionStorage} from "quasar";
+import {LocalStorage} from "quasar";
 
 const mutation: MutationTree<ExampleStateInterface> = {
   setClient(state: ExampleStateInterface, client) {
     state.client = client
-    SessionStorage.set('client', client)
+    LocalStorage.set('client', client)
   }
 };
 
