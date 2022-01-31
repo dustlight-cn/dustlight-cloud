@@ -28,7 +28,7 @@
       <q-list bordered separator v-if="processes && processes.data && processes.data.length > 0">
         <q-item v-for="(process,index) in processes.data" :key="index"
                 clickable
-                :to="{name:$options.app + '/process',params:{id:process.id}}"
+                :to="{name:$options.app + '/process',params:{name:process.name}}"
                 v-ripple>
           <q-item-section avatar>
             <q-icon name="fas fa-code-branch"/>

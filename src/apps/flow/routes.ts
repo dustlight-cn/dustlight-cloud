@@ -9,7 +9,7 @@ const routes: RouteRecordRaw[] = [
   {
     name: "process",
     component: () => import("./pages/Process.vue"),
-    path: "/process/:id"
+    path: "/process/:name"
   },
   {
     name: "instances",
