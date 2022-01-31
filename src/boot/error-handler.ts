@@ -21,13 +21,14 @@ function handleError(err: any) {
 }
 
 export default boot(({app}) => {
+
   app.config.globalProperties.$throw = (e: any) => {
     let msg = handleError(e)
-    console.log("???", e)
     app.config.globalProperties.$q.notify({
       type: 'negative',
       message: msg.title,
       caption: (msg.message ? msg.message + " " : "") + (msg.code > 0 ? "(Error Code: " + msg.code + ")" : "")
     })
   }
+  app.config.errorHandler = app.config.globalProperties.$throw
 });
