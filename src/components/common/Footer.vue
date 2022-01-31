@@ -3,7 +3,7 @@
     <div class="row">
 
       <q-space/>
-      <q-btn @click="openURL('https://github.com/dustlight-cn/dustlight-cloud')" size="12px" dense no-caps flat
+      <q-btn target="_blank" href="https://github.com/dustlight-cn/dustlight-cloud" size="12px" dense no-caps flat
              icon="img:icons/github.png"
              label="View on Github"/>
 
@@ -13,7 +13,6 @@
 </template>
 
 <script>
-import {openURL} from 'quasar';
 import LanguageSelector from "./LanguageSelector";
 
 export default {
@@ -21,7 +20,6 @@ export default {
   components: {LanguageSelector},
   data() {
     return {
-      openURL: openURL
     }
   }
 }

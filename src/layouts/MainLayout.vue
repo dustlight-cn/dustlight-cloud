@@ -1,5 +1,5 @@
 <template>
-  <q-layout view="hHh Lpr fFf">
+  <q-layout view="hHh Lpr fff">
     <q-header elevated>
       <q-toolbar>
         <logo class="q-mr-sm"/>
@@ -65,7 +65,7 @@
       <router-view/>
     </q-page-container>
 
-    <q-footer style="z-index: 0">
+    <q-footer>
       <Footer/>
     </q-footer>
   </q-layout>

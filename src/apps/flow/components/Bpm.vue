@@ -1,12 +1,14 @@
 <template>
-  <div :id="canvasId">
-<!--    <q-btn label="zoom" @click="zoom"/>-->
-  </div>
+  <q-responsive :ratio="16/9">
+    <div class="cv" :id="canvasId">
+      <!--    <q-btn label="zoom" @click="zoom"/>-->
+    </div>
+  </q-responsive>
 </template>
 
 <script>
 import {decode} from 'js-base64'
-import BpmnViewer from 'bpmn-js';
+import BpmnViewer from 'bpmn-js/lib/NavigatedViewer';
 import BpmnModdle from 'bpmn-moddle';
 
 export default {
@@ -63,7 +65,9 @@ export default {
   },
   mounted() {
     this.viewer = new BpmnViewer({
-      container: '#' + this.canvasId
+      container: '#' + this.canvasId,
+      width: "100%",
+      height: "100%"
     })
     this.load()
   }
@@ -71,5 +75,7 @@ export default {
 </script>
 
 <style scoped>
-
+/*.cv {*/
+/*  width: 200%;*/
+/*}*/
 </style>
