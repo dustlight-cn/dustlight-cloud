@@ -38,7 +38,8 @@
             </q-item-label>
           </q-item-section>
           <q-item-section side>
-            <q-btn round flat dense no-caps icon="link" @click="()=>openFunction(fun)" :disable="!config"/>
+            <q-btn round flat target="_blank" :href="openFunctionUrl(fun)" dense no-caps icon="link"
+                   :disable="!config"/>
           </q-item-section>
           <q-item-section side>
             <q-btn :loading="functionDeleting.indexOf(fun.name) > -1" round dense icon="delete" flat
@@ -47,7 +48,10 @@
         </q-item>
       </q-list>
       <div class="text-center" v-else>
-        {{ $appt("empty") }}
+        <div class="text-grey">
+          <div>{{ $appt("empty") }}</div>
+          <div class="q-mt-md"><q-btn no-caps color="primary" :label="$appt('create')" :to="{name: $options.app + '/create' }"></q-btn></div>
+        </div>
       </div>
     </div>
   </client-required-adaptive-layout>
@@ -55,7 +59,6 @@
 
 <script>
 import ClientRequiredAdaptiveLayout from "src/components/container/ClientRequiredAdaptiveLayout.vue";
-import {openURL} from "quasar";
 
 export default {
   name: "Index",
@@ -67,7 +70,8 @@ export default {
       client_: null,
       functions: [],
       loading: false,
-      functionDeleting: []
+      functionDeleting: [],
+      config: null
     }
   },
   computed: {
@@ -87,8 +91,9 @@ export default {
     }
   },
   methods: {
-    openFunction(fun) {
-      openURL(this.config.hostFormat.replace("%s", this.client_.cid) + "/" + fun.name)
+    openFunctionUrl(fun) {
+      let id = process.env.auth.config.clientId == this.client_.cid ? "system" : this.client_.cid
+      return (this.config.hostFormat.replace("%s", id) + "/" + fun.name)
     },
     loadFunctions() {
       if (this.functionsApi && !this.loading) {

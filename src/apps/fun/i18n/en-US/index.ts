@@ -8,6 +8,8 @@ export default {
 
   create: "Create Function",
 
+  empty: "This app has not yet created any functions",
+
   functionName: "Function Name",
   functionRuntime: "Runtime",
   functionHandler: "Handler",

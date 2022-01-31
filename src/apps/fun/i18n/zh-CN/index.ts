@@ -8,6 +8,8 @@ export default {
 
   create: "创建函数",
 
+  empty: "此应用还没有创建任何函数",
+
   functionName: "函数名",
   functionRuntime: "运行环境",
   functionHandler: "入口",
