@@ -4,6 +4,9 @@
 export default {
   title: "Flow",
 
+  save: "Save",
+  reset: "Reset",
+
   menu: {
     "processes": "Process",
     "instances": "Instance"

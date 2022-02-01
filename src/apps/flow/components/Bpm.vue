@@ -1,14 +1,21 @@
 <template>
   <div>
-    <q-responsive :ratio="16/9">
-      <q-card class="cursor-pointer shadow-0" bordered :id="canvasId">
-
-      </q-card>
-    </q-responsive>
-    <div class="text-right q-mt-xs">
-      <q-btn flat round color="primary" @click="reset" icon="my_location"/>
-    </div>
-    <div id="ggg"></div>
+    <q-card bordered class="shadow-0">
+      <q-splitter
+        disable
+        :model-value="$q.screen.gt.sm ? split : 100">
+        <template v-slot:before>
+          <q-responsive :ratio="16/9">
+            <div :id="canvasId">
+            </div>
+          </q-responsive>
+        </template>
+        <template v-if="$q.screen.gt.sm" v-slot:after>
+          <div :id="planeId" class=""></div>
+        </template>
+      </q-splitter>
+    </q-card>
+    <div v-if="!$q.screen.gt.sm" :id="planeId" class=""></div>
   </div>
 </template>
 
@@ -36,12 +43,15 @@ export default {
   data() {
     return {
       viewer: null,
-      scale: 1
+      split: 80
     }
   },
   computed: {
     canvasId() {
       return 'Bpm_' + this._.uid + '_canvas'
+    },
+    planeId() {
+      return 'Bpm_' + this._.uid + '_plane'
     }
   },
   methods: {
@@ -64,6 +74,9 @@ export default {
         console.warn('something went wrong:', warnings, message);
         this.$throw(err)
       });
+    },
+    export(format = false) {
+      return this.viewer.saveXML({format: format}).then(res => res.xml)
     }
   },
   watch: {
@@ -82,7 +95,7 @@ export default {
     this.viewer = new BpmnModdle({
       container: '#' + this.canvasId,
       propertiesPanel: {
-        parent: '#ggg'
+        parent: '#' + this.planeId
       },
       additionalModules: [
         TouchModule,
@@ -94,5 +107,7 @@ export default {
 </script>
 
 <style scoped>
+.plane {
 
+}
 </style>

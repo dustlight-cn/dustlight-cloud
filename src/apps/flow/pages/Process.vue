@@ -16,7 +16,14 @@
     <div v-if="loading" class="text-center">
       <q-spinner-gears color="primary" size="5em"/>
     </div>
-    <bpm v-else-if="prcs" :xml="prcs.data" :is-base64="true"/>
+    <div v-else-if="prcs">
+
+      <bpm ref="bpm" :xml="prcs.data" :is-base64="true"/>
+      <div class=" q-mt-sm q-gutter-sm text-right">
+        <q-btn no-caps :disable="saving" flat icon="refresh" @click="() => $refs.bpm.load()" :label="$appt('reset')"/>
+        <q-btn no-caps :loading="saving" color="primary" icon="save" @click="saveProcess" :label="$appt('save')"/>
+      </div>
+    </div>
   </client-required-adaptive-layout>
 </template>
 
@@ -34,6 +41,7 @@ export default {
       client_: null,
       prcs: null,
       loading: false,
+      saving: false,
       version: this.$route.query.version
     }
   },
@@ -52,7 +60,7 @@ export default {
     },
     client_() {
       this.loadProcess()
-    },
+    }
   },
   methods: {
     loadProcess() {
@@ -65,6 +73,16 @@ export default {
       p.then(res => this.prcs = res.data)
         .catch(this.$throw)
         .finally(() => this.loading = false)
+    },
+    saveProcess() {
+      if (this.saving)
+        return
+      this.saving = true
+      this.$refs.bpm.export()
+        .then(res => this.processesApi.createProcess(res, this.client_.cid, false))
+        .then((res) => this.loadProcess())
+        .catch(this.$throw)
+        .finally(() => this.saving = false)
     }
   },
   mounted() {
