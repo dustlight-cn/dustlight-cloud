@@ -1,23 +1,26 @@
 <template>
   <div>
     <q-responsive :ratio="16/9">
-      <q-card class="cursor-pointer shadow-0 flex" bordered v-touch-pan.prevent.mouse="handlePan" :id="canvasId">
+      <q-card class="cursor-pointer shadow-0" bordered :id="canvasId">
+
       </q-card>
     </q-responsive>
     <div class="text-right q-mt-xs">
-      <q-fab flat color="primary" icon="menu" direction="up">
-        <q-fab-action color="primary" @click="reset" icon="refresh" />
-        <q-slider class="q-mb-sm" reverse vertical v-model="scale" :step="0.1" :max="2" :min="0.1"/>
-      </q-fab>
+      <q-btn flat round color="primary" @click="reset" icon="my_location"/>
     </div>
-
+    <div id="ggg"></div>
   </div>
 </template>
 
 <script>
 import {decode} from 'js-base64'
-import BpmnViewer from 'bpmn-js/lib/Viewer';
-import BpmnModdle from 'bpmn-moddle';
+import BpmnViewer from 'bpmn-js/lib/NavigatedViewer';
+import TouchModule from 'diagram-js/lib/navigation/touch';
+import BpmnModdle from 'camunda-bpmn-js/lib/camunda-cloud/Modeler';
+
+import 'camunda-bpmn-js/dist/assets/diagram-js.css'
+import 'camunda-bpmn-js/dist/assets/bpmn-font/css/bpmn.css'
+import 'camunda-bpmn-js/dist/assets/bpmn-js-properties-panel.css'
 
 export default {
   name: "Bpm",
@@ -42,9 +45,6 @@ export default {
     }
   },
   methods: {
-    handlePan({evt, ...info}) {
-      this.viewer.get('canvas').scroll({dx: info.delta.x, dy: info.delta.y})
-    },
     reset() {
       this.viewer.get('canvas').zoom('fit-viewport')
     },
@@ -52,19 +52,17 @@ export default {
 
       let xml = !this.isBase64 ? this.xml : decode(this.xml)
       let viewer = this.viewer
-      console.log(viewer)
-      viewer.importXML(xml).then(function (result) {
+
+      viewer.importXML(xml).then(result => {
 
         const {warnings} = result;
-
-        console.log('success !', warnings);
-
-        viewer.get('canvas').zoom('fit-viewport');
-      }).catch(function (err) {
-
+        if (warnings && warnings.length > 0)
+          console.warn(warnings)
+        this.reset()
+      }).catch(err => {
         const {warnings, message} = err;
-
-        console.log('something went wrong:', warnings, message);
+        console.warn('something went wrong:', warnings, message);
+        this.$throw(err)
       });
     }
   },
@@ -77,10 +75,18 @@ export default {
     }
   },
   mounted() {
-    this.viewer = new BpmnViewer({
+    // this.viewer = new BpmnViewer({
+    //   container: '#' + this.canvasId,
+    //   additionalModules: [TouchModule]
+    // })
+    this.viewer = new BpmnModdle({
       container: '#' + this.canvasId,
-      width: "100%",
-      height: "100%"
+      propertiesPanel: {
+        parent: '#ggg'
+      },
+      additionalModules: [
+        TouchModule,
+      ]
     })
     this.load()
   }
@@ -88,7 +94,5 @@ export default {
 </script>
 
 <style scoped>
-/*.cv {*/
-/*  width: 200%;*/
-/*}*/
+
 </style>
