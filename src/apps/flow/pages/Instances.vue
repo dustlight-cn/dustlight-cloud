@@ -1,30 +1,74 @@
 <template>
   <client-required-adaptive-layout
-    :title="$appt('menu.create')"
+    :title="$appt('menu.instances')"
     v-slot="{client,user,token}">
     {{ "", client_ = client, user_ = user, token_ = token }}
-    <q-form @submit="create" class="q-gutter-sm">
-      <q-input v-model="model.name" filled :label="$appt('functionName')"
-               :disable="loading"
-               :rules="rules.notEmpty"/>
-      <q-select v-model="model.runtime" filled :label="$appt('functionRuntime')" :options="options"
-                :disable="loading"
-                :rules="rules.notEmpty"
-                @filter="loadRuntimes"/>
-      <q-input v-model="model.handler" filled :label="$appt('functionHandler')"
-               :disable="loading"
-               :rules="rules.notEmpty"/>
-      <q-file accept=".zip, application/x-zip-compressed" v-model="model.file" filled :label="$appt('functionFile')"
-              :disable="loading"
-              :rules="rules.notNull">
-        <template v-slot:prepend>
-          <q-icon name="attach_file"/>
-        </template>
-      </q-file>
-      <div class="text-right q-mt-md">
-        <q-btn no-caps type="submit" :loading="loading" color="primary" :label="$appt('create')"/>
+
+    <q-list bordered separator v-if="loading">
+      <q-item v-for="index in 5" :key="index">
+        <q-item-section avatar>
+          <q-skeleton type="text" width="2em"/>
+        </q-item-section>
+        <q-item-section>
+          <q-item-label>
+            <q-skeleton type="text" width="2em"/>
+            <q-badge>
+              <q-skeleton type="text" width="1em"/>
+            </q-badge>
+          </q-item-label>
+        </q-item-section>
+        <q-item-section side>
+          <q-item-label>
+            <q-skeleton type="text" width="2em"/>
+          </q-item-label>
+        </q-item-section>
+      </q-item>
+    </q-list>
+    <div v-else>
+      <q-list bordered separator v-if="instances && instances.data && instances.data.length > 0">
+        <q-item v-for="(instance,index) in instances.data" :key="index"
+                clickable
+                :to="{name:$options.app + '/instance',params:{name:instance.name}}"
+                v-ripple>
+          <q-item-section avatar>
+            <q-badge :color="getStatusColor(instance.status)">
+              {{ instance.status }}
+            </q-badge>
+          </q-item-section>
+          <q-item-section>
+            <q-item-label>
+              {{ instance.name }}
+              <q-badge>v{{ instance.version }}</q-badge>
+            </q-item-label>
+            <q-item-label caption>
+              {{ $moment(instance.createdAt) }}
+            </q-item-label>
+          </q-item-section>
+          <q-item-section v-if="instance.status == 'INCIDENT'">
+            <q-item-label overline>{{ instance.error.type }}</q-item-label>
+            <q-item-label caption>{{ instance.error.message }}</q-item-label>
+          </q-item-section>
+          <q-item-section side>
+            <q-icon name="keyboard_arrow_right"/>
+            <!--                      <q-btn round flat dense no-caps icon="link" @click="()=>openFunction(fun)" :disable="!config"/>-->
+          </q-item-section>
+        </q-item>
+        <div v-if="instances && instances.count > pageSize " class="flex flex-center">
+          <q-pagination
+            v-model="page"
+            :max="Math.ceil(instances.count/pageSize)"
+            input
+            color="primary"
+          />
+        </div>
+      </q-list>
+      <div class="text-center" v-else>
+        <div class="text-grey">
+          <div>{{ $appt("emptyInstance") }}</div>
+          <!--          <div class="q-mt-md"><q-btn no-caps color="primary" :label="$appt('create')" :to="{name: $options.app + '/create' }"></q-btn></div>-->
+        </div>
       </div>
-    </q-form>
+    </div>
   </client-required-adaptive-layout>
 </template>
 
@@ -39,56 +83,56 @@ export default {
       user_: null,
       token_: null,
       client_: null,
-      options: null,
-      model: {
-        name: "hello",
-        handler: "sl_handler.handler",
-        runtime: "nodejs14",
-        file: null
-      },
       loading: false,
-      rules: {
-        notNull: [(val) => val != null || ""],
-        notEmpty: [(val) => val != null && val.trim().length > 0 || ""]
-      }
+      instances: null,
+      pageSize: 10,
+      page: 1
+    }
+  },
+  watch: {
+    token_() {
+      this.page = 1
+      this.loadInstances()
+    },
+    client_() {
+      this.page = 1
+      this.loadInstances()
+    },
+    page() {
+      this.loadInstances()
     }
   },
   computed: {
-    functionsApi() {
-      return this.$options.ext.functionsApi(this.token_.access_token)
+    instancesApi() {
+      return this.$options.ext.instancesApi(this.token_.access_token)
     }
   },
   methods: {
-    create() {
-      if (this.loading)
-        return
-      this.loading = true
-      this.functionsApi.createFunction(this.model.name,
-        this.model.file,
-        this.model.runtime,
-        this.model.handler,
-        this.client_.cid)
-        .then(res => {
-          this.$router.push({name: this.$options.app + "/index"})
-        })
-        .catch(this.$throw)
-        .finally(() => {
-          this.loading = false
-        })
-    },
-    loadRuntimes(val, update, abort) {
-      if (this.options != null) {
-        update()
-        return
+    getStatusColor(status) {
+      switch (status) {
+        case 'ACTIVE':
+          return 'green';
+        case 'INCIDENT':
+          return 'red';
+        case 'RESOLVE':
+          return 'blue';
+        case 'CANCELED':
+        case 'COMPLETED':
+        default:
+          return 'grey'
       }
-      this.functionsApi.getRuntimes().then(res => {
-        this.options = res.data
-      })
-        .catch(this.$throw)
-        .finally(() => {
-          update()
-        })
-    }
+    },
+    loadInstances() {
+      if (!this.loading) {
+        this.loading = true
+        this.instancesApi.getInstances(undefined, undefined, undefined, this.page - 1, this.pageSize)
+          .then(res => {
+            this.instances = res.data
+          })
+          .catch(this.$throw)
+          .finally(() => this.loading = false)
+      }
+    },
   },
   mounted() {
   }
