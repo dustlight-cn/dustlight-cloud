@@ -7,6 +7,9 @@ export default {
   save: "保存",
   reset: "重置",
 
+  emptyProcesses: "此应用还没有创建任何流程",
+  emptyInstance: "暂时没有流程实例",
+
   menu: {
     "processes": "流程",
     "instances": "实例"

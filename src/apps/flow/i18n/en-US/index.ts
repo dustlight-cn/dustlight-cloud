@@ -7,6 +7,9 @@ export default {
   save: "Save",
   reset: "Reset",
 
+  emptyProcesses: "This app has not yet created any flows",
+  emptyInstance: "There are no process instances at this time",
+
   menu: {
     "processes": "Process",
     "instances": "Instance"

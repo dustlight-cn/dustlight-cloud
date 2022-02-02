@@ -61,7 +61,10 @@
         </div>
       </q-list>
       <div class="text-center" v-else>
-        {{ $appt("empty") }}
+        <div class="text-grey">
+          <div>{{ $appt("emptyProcesses") }}</div>
+<!--          <div class="q-mt-md"><q-btn no-caps color="primary" :label="$appt('create')" :to="{name: $options.app + '/create' }"></q-btn></div>-->
+        </div>
       </div>
     </div>
   </client-required-adaptive-layout>
