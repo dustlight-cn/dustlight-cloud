@@ -3,7 +3,7 @@
     <q-card bordered class="shadow-0">
       <q-splitter
         disable
-        :model-value="$q.screen.gt.sm ? split : 100">
+        :model-value="$q.screen.gt.sm && !instance ? split : 100">
         <template v-slot:before>
           <q-responsive :ratio="16/9">
             <div :id="canvasId">
@@ -36,6 +36,12 @@ export default {
     isBase64: {
       type: Boolean,
       default() {
+        return false
+      }
+    },
+    instance:{
+      type: Boolean,
+      default(){
         return false
       }
     }
@@ -88,11 +94,13 @@ export default {
     }
   },
   mounted() {
-    // this.viewer = new BpmnViewer({
-    //   container: '#' + this.canvasId,
-    //   additionalModules: [TouchModule]
-    // })
-    this.viewer = new BpmnModdle({
+
+    this.viewer = this.instance ?
+      new BpmnViewer({
+        container: '#' + this.canvasId,
+        additionalModules: [TouchModule]
+      })
+      :new BpmnModdle({
       container: '#' + this.canvasId,
       propertiesPanel: {
         parent: '#' + this.planeId

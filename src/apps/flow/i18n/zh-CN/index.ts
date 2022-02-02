@@ -9,6 +9,7 @@ export default {
 
   emptyProcesses: "此应用还没有创建任何流程",
   emptyInstance: "暂时没有流程实例",
+  retry: "重试",
 
   menu: {
     "processes": "流程",

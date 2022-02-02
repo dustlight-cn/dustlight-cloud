@@ -10,6 +10,8 @@ export default {
   emptyProcesses: "This app has not yet created any flows",
   emptyInstance: "There are no process instances at this time",
 
+  retry: "Retry",
+
   menu: {
     "processes": "Process",
     "instances": "Instance"

@@ -28,7 +28,7 @@
       <q-list bordered separator v-if="instances && instances.data && instances.data.length > 0">
         <q-item v-for="(instance,index) in instances.data" :key="index"
                 clickable
-                :to="{name:$options.app + '/instance',params:{name:instance.name}}"
+                :to="{name:$options.app + '/instance',params:{id:instance.id}}"
                 v-ripple>
           <q-item-section avatar>
             <q-badge :color="getStatusColor(instance.status)">
@@ -109,18 +109,7 @@ export default {
   },
   methods: {
     getStatusColor(status) {
-      switch (status) {
-        case 'ACTIVE':
-          return 'green';
-        case 'INCIDENT':
-          return 'red';
-        case 'RESOLVE':
-          return 'blue';
-        case 'CANCELED':
-        case 'COMPLETED':
-        default:
-          return 'grey'
-      }
+      return this.$options.ext.getStatusColor(status)
     },
     loadInstances() {
       if (!this.loading) {
