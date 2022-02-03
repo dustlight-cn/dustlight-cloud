@@ -6,7 +6,8 @@ declare interface Ext {
   basePath: string
   instancesApi: (token: any) => InstancesApi
   processApi: (token: any) => ProcessesApi,
-  getStatusColor: (status: string) => string
+  getStatusColor: (status: string) => string,
+  getStatusIcon: (status: string) => string
 }
 
 const ext: Ext = {
@@ -27,6 +28,22 @@ const ext: Ext = {
         return 'grey'
     }
   },
+  getStatusIcon(status) {
+  switch (status) {
+    case 'ACTIVE':
+      return 'fas fa-play';
+    case 'INCIDENT':
+      return 'error';
+    case 'RESOLVE':
+      return 'refresh';
+    case 'CANCELED':
+      return 'fas fa-lightbulb-slash'
+    case 'COMPLETED':
+      return 'check'
+    default:
+      return 'question'
+  }
+},
 }
 
 export default ext

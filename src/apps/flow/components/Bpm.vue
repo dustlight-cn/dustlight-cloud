@@ -40,10 +40,7 @@ export default {
       }
     },
     instance:{
-      type: Boolean,
-      default(){
-        return false
-      }
+      type: Object
     }
   },
   data() {
@@ -68,13 +65,35 @@ export default {
 
       let xml = !this.isBase64 ? this.xml : decode(this.xml)
       let viewer = this.viewer
-
       viewer.importXML(xml).then(result => {
 
         const {warnings} = result;
         if (warnings && warnings.length > 0)
           console.warn(warnings)
         this.reset()
+
+        if (this.instance) {
+          let instance = this.instance
+          let registry = viewer.get('elementRegistry')
+          let overlays = viewer.get('overlays')
+          let canvas = viewer.get('canvas')
+
+          this.instance.events.forEach(event => {
+            if(event.elementType == 'PROCESS')
+              return
+            let shape = registry.get(event.elementId)
+            console.log(event)
+            // overlays.add(event.elementId, {
+            //   position: {
+            //     top: 0,
+            //     left: 0
+            //   },
+            //   html: `<div style="background-color: rgba(33,186,69,0.3); width: ${shape.width}px;height: ${shape.height}px;"></div>`
+            // });
+
+            canvas.addMarker(event.elementId, event.status == 'INCIDENT' ? 'highlight-red' : 'highlight-green');
+          })
+        }
       }).catch(err => {
         const {warnings, message} = err;
         console.warn('something went wrong:', warnings, message);
@@ -114,8 +133,13 @@ export default {
 }
 </script>
 
-<style scoped>
-.plane {
-
+<style>
+.highlight-green:not(.djs-connection) .djs-visual > :nth-child(1) {
+  fill: rgba(174, 243, 174, 0.93) !important;
+  stroke: rgba(0, 128, 0, 0.84) !important;
+}
+.highlight-red:not(.djs-connection) .djs-visual > :nth-child(1) {
+  fill: rgb(245, 184, 183) !important;
+  stroke: rgb(213, 13, 7) !important;
 }
 </style>

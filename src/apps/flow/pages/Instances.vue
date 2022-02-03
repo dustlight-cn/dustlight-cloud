@@ -31,12 +31,14 @@
                 :to="{name:$options.app + '/instance',params:{id:instance.id}}"
                 v-ripple>
           <q-item-section avatar>
-            <q-badge :color="getStatusColor(instance.status)">
-              {{ instance.status }}
-            </q-badge>
+            <q-icon :name="$options.ext.getStatusIcon(instance.status)"
+                    :color="$options.ext.getStatusColor(instance.status)"/>
           </q-item-section>
           <q-item-section>
-            <q-item-label>
+            <q-item-label overline>
+              {{ instance.id }}
+            </q-item-label>
+            <q-item-label caption>
               {{ instance.name }}
               <q-badge>v{{ instance.version }}</q-badge>
             </q-item-label>

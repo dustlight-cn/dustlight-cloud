@@ -11,7 +11,8 @@
         <q-skeleton type="text" width="4em"/>
       </div>
       <div v-else class="text-subtitle1">
-        <q-icon name="fas fa-play"/>
+        <q-icon size="2em" :name="$options.ext.getStatusIcon(instance.status)" :color="$options.ext.getStatusColor(instance.status)"/>
+<!--        <q-icon name="fas fa-play"/>-->
         {{ instance.name }}
         <q-badge>
           v{{ instance.version }}
@@ -36,22 +37,21 @@
       <div v-if="loading" class="text-center">
         <q-spinner-gears color="primary" size="5em"/>
       </div>
-      <bpm v-else-if="prcs" ref="bpm" :instance="true" :xml="prcs.data" :is-base64="true"/>
+      <bpm v-else-if="prcs" ref="bpm" :instance="instance" :xml="prcs.data" :is-base64="true"/>
       <div class="q-mt-sm">
         <q-list bordered separator>
           <q-item v-for="(event,index) in instance.events" :key="index"
                   clickable
                   v-ripple>
             <q-item-section avatar>
-              <q-badge>
-                {{ event.elementType }}
-              </q-badge>
+              <q-icon :name="$options.ext.getStatusIcon(event.status)" :color="$options.ext.getStatusColor(event.status)"/>
             </q-item-section>
             <q-item-section>
+
               <q-item-label>
                 {{ event.elementId }}
                 <q-badge :color="$options.ext.getStatusColor(event.status)">
-                  {{event.status}}
+                  {{ event.elementType }}
                 </q-badge>
               </q-item-label>
               <q-item-label caption>
