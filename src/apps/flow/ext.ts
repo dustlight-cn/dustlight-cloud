@@ -35,9 +35,9 @@ const ext: Ext = {
     case 'INCIDENT':
       return 'error';
     case 'RESOLVE':
-      return 'refresh';
+      return 'fas fa-refresh';
     case 'CANCELED':
-      return 'fas fa-lightbulb-slash'
+      return 'fas fa-times'
     case 'COMPLETED':
       return 'check'
     default:

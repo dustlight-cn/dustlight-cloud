@@ -40,31 +40,56 @@
       <bpm v-else-if="prcs" ref="bpm" :instance="instance" :xml="prcs.data" :is-base64="true"/>
       <div class="q-mt-sm">
         <q-list bordered separator>
-          <q-item v-for="(event,index) in instance.events" :key="index"
-                  clickable
-                  v-ripple>
-            <q-item-section avatar>
-              <q-icon :name="$options.ext.getStatusIcon(event.status)" :color="$options.ext.getStatusColor(event.status)"/>
-            </q-item-section>
-            <q-item-section>
-
-              <q-item-label>
-                {{ event.elementId }}
-                <q-badge :color="$options.ext.getStatusColor(event.status)">
-                  {{ event.elementType }}
-                </q-badge>
-              </q-item-label>
-              <q-item-label caption>
-                {{event.createdAt}}
-              </q-item-label>
-            </q-item-section>
-          </q-item>
+          <q-expansion-item :group="instance.name + '_events'" v-for="(event,index) in computedEvents" :key="index"
+                            @before-show="()=>loadVariables(event)">
+            <template v-slot:header>
+              <q-item-section avatar>
+                <q-icon :name="$options.ext.getStatusIcon(event.status)"
+                        :color="$options.ext.getStatusColor(event.status)"/>
+              </q-item-section>
+              <q-item-section>
+                <q-item-label>
+                  {{ event.elementId }}
+                  <q-badge>
+                    {{ event.elementType }}
+                  </q-badge>
+                </q-item-label>
+              </q-item-section>
+              <q-item-section v-if="event.error">
+                <q-item-label overline>{{ event.error.type }}</q-item-label>
+                <q-item-label caption>{{ event.error.message }}</q-item-label>
+              </q-item-section>
+            </template>
+            <template v-slot:default>
+              <q-card>
+                <q-card-section>
+                  <div class="text-subtitle2">{{ $appt('createdAt') }}</div>
+                  <div class="text-caption">{{ $moment(event.createdAt) }}</div>
+                  <div class="text-subtitle2">{{ $appt('updatedAt') }}</div>
+                  <div class="text-caption">{{ $moment(event.updatedAt) }}</div>
+                </q-card-section>
+                <q-card-section>
+                  <div class="text-subtitle2">{{ $appt('variables') }}</div>
+                  <q-form class="q-gutter-sm">
+                    <div class="text-center" v-if="variableLoading.indexOf(event.elementId) > -1">
+                      <q-spinner-gears color="primary" size="4em"/>
+                    </div>
+                    <div class="q-gutter-sm" v-else="variablesMap[event.elementId]">
+                      <div v-for="(variable,index) in variablesMap[event.elementId]" :key="index">
+                        <q-input filled :label="index" v-model="variablesMap[event.elementId][index]"/>
+                      </div>
+                    </div>
+                  </q-form>
+                </q-card-section>
+              </q-card>
+            </template>
+          </q-expansion-item>
         </q-list>
       </div>
-      <!--      <div class=" q-mt-sm q-gutter-sm text-right">-->
-      <!--        <q-btn no-caps :disable="saving" flat icon="refresh" @click="() => $refs.bpm.load()" :label="$appt('reset')"/>-->
-      <!--        <q-btn no-caps :loading="saving" color="primary" icon="save" @click="saveProcess" :label="$appt('save')"/>-->
-      <!--      </div>-->
+      <div class=" q-mt-sm q-gutter-sm text-right">
+        <q-btn v-if="instance.status != 'COMPLETED' && instance.status != 'CANCELED' " no-caps :loading="canceling" flat
+               :icon="$options.ext.getStatusIcon('CANCELED')" @click="cancel" :label="$appt('cancel')"/>
+      </div>
 
     </div>
     <div v-else class="text-center">
@@ -87,7 +112,10 @@ export default {
       client_: null,
       loading: false,
       instance: null,
-      prcs: null
+      prcs: null,
+      variablesMap: {},
+      variableLoading: [],
+      canceling: false
     }
   },
   computed: {
@@ -104,6 +132,22 @@ export default {
      */
     instancesAPi() {
       return this.$options.ext.instancesApi(this.token_.access_token)
+    },
+    computedEvents() {
+      if (this.instance == null || this.instance.events == null)
+        return null;
+      let events = {}
+      this.instance.events.forEach(event => {
+        if (event.elementType == "SEQUENCE_FLOW")
+          return;
+        if (events[event.elementId] && events[event.elementId].error == null) {
+          events[event.elementId].error = event.error
+          events[event.elementId].status = event.status
+          return;
+        }
+        events[event.elementId] = event
+      })
+      return events;
     }
   },
   watch: {
@@ -128,6 +172,24 @@ export default {
       })
         .catch(this.$throw)
         .finally(() => this.loading = false)
+    },
+    loadVariables(event) {
+      if (this.variableLoading.indexOf(event.elementId) > -1 || this.variablesMap[event.elementId])
+        return
+      this.variableLoading.push(event.elementId)
+      this.instancesAPi.getInstanceVariables(this.instance.id, event.id, this.client_.cid)
+        .then(res => this.variablesMap[event.elementId] = res.data)
+        .catch(this.$throw)
+        .finally(() => this.variableLoading.splice(this.variableLoading.indexOf(event.elementId), 1))
+    },
+    cancel() {
+      if (this.canceling)
+        return
+      this.canceling = true
+      this.instancesAPi.cancelInstance(this.instance.id, this.client_.cid)
+        .then(res => this.loadInstance())
+        .catch(this.$throw)
+        .finally(() => this.canceling = false)
     }
   },
   mounted() {

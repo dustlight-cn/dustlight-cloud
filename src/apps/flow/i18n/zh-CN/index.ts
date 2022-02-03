@@ -6,10 +6,15 @@ export default {
 
   save: "保存",
   reset: "重置",
+  cancel: "取消",
 
   emptyProcesses: "此应用还没有创建任何流程",
   emptyInstance: "暂时没有流程实例",
   retry: "重试",
+
+  createdAt: "创建时间",
+  updatedAt: "更新时间",
+  variables: "变量",
 
   menu: {
     "processes": "流程",

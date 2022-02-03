@@ -6,11 +6,16 @@ export default {
 
   save: "Save",
   reset: "Reset",
+  cancel: "Cancel",
 
   emptyProcesses: "This app has not yet created any flows",
   emptyInstance: "There are no process instances at this time",
 
   retry: "Retry",
+
+  createdAt: "Created At",
+  updatedAt: "Updated At",
+  variables: "Variables",
 
   menu: {
     "processes": "Process",

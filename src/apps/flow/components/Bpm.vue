@@ -82,7 +82,7 @@ export default {
             if(event.elementType == 'PROCESS')
               return
             let shape = registry.get(event.elementId)
-            console.log(event)
+            // console.log(event)
             // overlays.add(event.elementId, {
             //   position: {
             //     top: 0,
