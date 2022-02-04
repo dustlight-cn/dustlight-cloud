@@ -7,6 +7,8 @@ export default {
   save: "Save",
   reset: "Reset",
   cancel: "Cancel",
+  run: "Run Instance",
+  checkInstance: "Check Instances",
 
   emptyProcesses: "This app has not yet created any flows",
   emptyInstance: "There are no process instances at this time",

@@ -7,6 +7,8 @@ export default {
   save: "保存",
   reset: "重置",
   cancel: "取消",
+  run: "启动实例",
+  checkInstance: "查看实例",
 
   emptyProcesses: "此应用还没有创建任何流程",
   emptyInstance: "暂时没有流程实例",

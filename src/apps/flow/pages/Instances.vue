@@ -102,6 +102,14 @@ export default {
     },
     page() {
       this.loadInstances()
+    },
+    "$route.query.name"(){
+      this.page = 1
+      this.loadInstances()
+    },
+    "$route.query.version"(){
+      this.page = 1
+      this.loadInstances()
     }
   },
   computed: {
@@ -116,7 +124,7 @@ export default {
     loadInstances() {
       if (!this.loading) {
         this.loading = true
-        this.instancesApi.getInstances(undefined, undefined, undefined, this.page - 1, this.pageSize)
+        this.instancesApi.getInstances(this.$route.query.name, this.$route.query.version, undefined, this.page - 1, this.pageSize)
           .then(res => {
             this.instances = res.data
           })
