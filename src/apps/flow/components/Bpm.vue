@@ -62,9 +62,13 @@ export default {
       this.viewer.get('canvas').zoom('fit-viewport')
     },
     load() {
-
-      let xml = !this.isBase64 ? this.xml : decode(this.xml)
       let viewer = this.viewer
+
+      if (this.xml == "" && viewer instanceof BpmnModdle) {
+        viewer.createDiagram()
+        return
+      }
+      let xml = !this.isBase64 ? this.xml : decode(this.xml)
       viewer.importXML(xml).then(result => {
 
         const {warnings} = result;

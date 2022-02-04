@@ -12,6 +12,11 @@ const routes: RouteRecordRaw[] = [
     path: "/process/:name"
   },
   {
+    name: "new-process",
+    component: () => import("./pages/Process.vue"),
+    path: "/process/"
+  },
+  {
     name: "instances",
     component: () => import("./pages/Instances.vue"),
     path: "/instances"

@@ -7,8 +7,8 @@
     <!--    {{ process }}-->
     <div class="q-pb-md text-subtitle1">
       <q-icon name="fas fa-code-branch"/>
-      {{ $route.params.name }}
-      <q-badge>
+      {{ $route.params.name || $appt('newProcess') }}
+      <q-badge v-if="$route.params.name">
         <q-skeleton v-if="loading || !prcs" type="text" width="1em"/>
         <span v-else>v{{ prcs.version }}</span>
       </q-badge>
@@ -61,15 +61,20 @@ export default {
     client_() {
       this.loadProcess()
     },
-    "$route.params.name"(){
-      if(this.$route.params.name)
-        this.loadProcess()
+    "$route.params.name"() {
+      this.loadProcess()
     }
   },
   methods: {
     loadProcess() {
       if (this.loading || !this.client_ || !this.token_)
         return
+      if (!this.$route.params.name) {
+        this.prcs = {
+          data: ""
+        }
+        return;
+      }
       this.loading = true
       let p = this.version ?
         this.processesApi.getProcess1(this.$route.params.name, this.version, this.client_.cid) :
@@ -83,10 +88,8 @@ export default {
         return
       this.saving = true
       this.$refs.bpm.export()
-        .then(res => {
-          this.processesApi.createProcess(res.xml, this.client_.cid, false)
-          this.$router.push({name: this.$route.name, params: {name: res.name}})
-        })
+        .then(res => this.processesApi.createProcess(res.xml, this.client_.cid, false)
+          .then(() => this.$router.push({name: this.$options.app + "/process", params: {name: res.name}})))
         .catch(this.$throw)
         .finally(() => this.saving = false)
     }

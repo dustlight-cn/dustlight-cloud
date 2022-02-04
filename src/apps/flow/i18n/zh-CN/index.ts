@@ -12,6 +12,8 @@ export default {
   emptyInstance: "暂时没有流程实例",
   retry: "重试",
 
+  newProcess: "新建流程",
+
   createdAt: "创建时间",
   updatedAt: "更新时间",
   variables: "变量",

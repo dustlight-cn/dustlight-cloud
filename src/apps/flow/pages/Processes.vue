@@ -63,10 +63,15 @@
       <div class="text-center" v-else>
         <div class="text-grey">
           <div>{{ $appt("emptyProcesses") }}</div>
-<!--          <div class="q-mt-md"><q-btn no-caps color="primary" :label="$appt('create')" :to="{name: $options.app + '/create' }"></q-btn></div>-->
+          <!--          <div class="q-mt-md"><q-btn no-caps color="primary" :label="$appt('create')" :to="{name: $options.app + '/create' }"></q-btn></div>-->
         </div>
       </div>
     </div>
+
+
+    <q-page-sticky :offset="[18,18]">
+      <q-btn :to="{name: $options.app + '/new-process'}" color="primary" round icon="add"/>
+    </q-page-sticky>
   </client-required-adaptive-layout>
 </template>
 

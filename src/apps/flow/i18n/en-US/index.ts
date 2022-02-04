@@ -13,6 +13,8 @@ export default {
 
   retry: "Retry",
 
+  newProcess: "New Process",
+
   createdAt: "Created At",
   updatedAt: "Updated At",
   variables: "Variables",
