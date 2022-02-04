@@ -108,7 +108,10 @@ export default {
       });
     },
     export(format = false) {
-      return this.viewer.saveXML({format: format}).then(res => res.xml)
+      return this.viewer.saveXML({format: format}).then(res => {
+        res.name = this.viewer.get('canvas').getPlane('base').rootElement.id
+        return res
+      })
     }
   },
   watch: {

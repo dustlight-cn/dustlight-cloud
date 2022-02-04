@@ -60,11 +60,15 @@ export default {
     },
     client_() {
       this.loadProcess()
+    },
+    "$route.params.name"(){
+      if(this.$route.params.name)
+        this.loadProcess()
     }
   },
   methods: {
     loadProcess() {
-      if (this.loading)
+      if (this.loading || !this.client_ || !this.token_)
         return
       this.loading = true
       let p = this.version ?
@@ -79,8 +83,10 @@ export default {
         return
       this.saving = true
       this.$refs.bpm.export()
-        .then(res => this.processesApi.createProcess(res, this.client_.cid, false))
-        .then((res) => this.loadProcess())
+        .then(res => {
+          this.processesApi.createProcess(res.xml, this.client_.cid, false)
+          this.$router.push({name: this.$route.name, params: {name: res.name}})
+        })
         .catch(this.$throw)
         .finally(() => this.saving = false)
     }
