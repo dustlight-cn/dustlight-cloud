@@ -71,11 +71,30 @@
                     <div class="text-center" v-if="variableLoading.indexOf(event.elementId) > -1">
                       <q-spinner-gears color="primary" size="4em"/>
                     </div>
-                    <div class="q-gutter-sm" v-else="variablesMap[event.elementId]">
-                      <div v-for="(variable,index) in variablesMap[event.elementId]" :key="index">
-                        <q-input filled :label="index" v-model="variablesMap[event.elementId][index]"/>
-                      </div>
-                    </div>
+                    <q-list separator v-else="variablesMap[event.elementId]">
+                      <q-item clickable v-ripple v-for="(variable,index) in variablesMap[event.elementId]" :key="index">
+                        <q-item-section>
+                          <q-item-label overline style="word-break: break-all">{{ index }}</q-item-label>
+                        </q-item-section>
+                        <q-item-section>
+                          <q-item-label caption style="word-break: break-all">
+                            {{ variable }}
+                          </q-item-label>
+                        </q-item-section>
+                      </q-item>
+
+                      <q-item>
+                        <q-item-section>
+                          <q-input filled v-model="newVariables.key"/>
+                        </q-item-section>
+                        <q-item-section>
+                          <q-input filled v-model="newVariables.value"/>
+                        </q-item-section>
+                        <q-item-section side>
+                          <q-btn flat round icon="add"/>
+                        </q-item-section>
+                      </q-item>
+                    </q-list>
                   </q-form>
                 </q-card-section>
               </q-card>
@@ -112,6 +131,7 @@ export default {
       prcs: null,
       variablesMap: {},
       variableLoading: [],
+      newVariables: {key: "name", value: "value"},
       canceling: false,
       resolving: false
     }
@@ -204,10 +224,13 @@ export default {
         .then(() => this.loadInstance())
         .catch(this.$throw)
         .finally(() => this.resolving = false)
+    },
+    setVariable(a,b) {
+      console.log(a,b)
     }
   },
   mounted() {
-
+    this.setVariable(1,2)
   }
 }
 </script>
