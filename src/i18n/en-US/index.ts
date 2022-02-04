@@ -13,5 +13,7 @@ export default {
   signOutSuccess: "Successfully signed out",
 
   unauthorizedTips: "Please Sign In to View This Content",
-  unselectClientTips: "Please Select a Client to View This Content"
+  unselectClientTips: "Please Select a Client to View This Content",
+
+  notFound: "Oops. Nothing here..."
 };

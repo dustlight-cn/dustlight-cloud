@@ -1,29 +1,26 @@
 <template>
-  <div class="fullscreen bg-blue text-white text-center q-pa-md flex flex-center">
-    <div>
+  <q-page class="text-center flex flex-center">
+    <div class="q-pa-md">
       <div style="font-size: 30vh">
         404
       </div>
 
-      <div class="text-h2" style="opacity:.4">
-        Oops. Nothing here...
+      <div class="text-h2 q-mb-sm" style="opacity:.4">
+        {{ $t('notFound') }}
       </div>
 
       <q-btn
-        class="q-mt-xl"
-        color="white"
-        text-color="blue"
-        unelevated
-        to="/"
-        label="Go Home"
+        round
+        icon="home"
+        :to="{name: 'index'}"
         no-caps
       />
     </div>
-  </div>
+  </q-page>
 </template>
 
 <script lang="ts">
-import { defineComponent } from 'vue'
+import {defineComponent} from 'vue'
 
 export default defineComponent({
   name: 'Error404'

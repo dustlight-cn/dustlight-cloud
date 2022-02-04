@@ -8,16 +8,17 @@ const routes: RouteRecordRaw[] = [
     component: () => import('layouts/MainLayout.vue'),
     children: [
       {name: 'index', path: '', component: () => import('pages/Index.vue')},
-      {name: 'login', path: 'login', component: () => import('pages/cloud/Login.vue')}
+      {name: 'login', path: 'login', component: () => import('pages/cloud/Login.vue')},
+
+      // Always leave this as last one,
+      // but you can also remove it
+      {
+        path: ':catchAll(.*)*',
+        component: () => import('pages/Error404.vue'),
+      },
     ],
   },
 
-  // Always leave this as last one,
-  // but you can also remove it
-  {
-    path: '/:catchAll(.*)*',
-    component: () => import('pages/Error404.vue'),
-  },
 ];
 
 // @ts-ignore

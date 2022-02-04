@@ -13,5 +13,7 @@ export default {
   signOutSuccess: "成功退出登录",
 
   unauthorizedTips: "要查看此内容，请登录您的账号",
-  unselectClientTips: "要查看此内容，请选择一个应用"
+  unselectClientTips: "要查看此内容，请选择一个应用",
+
+  notFound: "这里空空如也……"
 };
