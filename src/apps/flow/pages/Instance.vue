@@ -4,15 +4,12 @@
     v-slot="{client,user,token}">
     {{ "", client_ = client, user_ = user, token_ = token }}
 
-    <!--    {{ process }}-->
-
     <div class="q-pb-md ">
       <div v-if="!instance" class="text-subtitle1 row">
         <q-skeleton type="text" width="4em"/>
       </div>
       <div v-else class="text-subtitle1">
         <q-icon size="2em" :name="$options.ext.getStatusIcon(instance.status)" :color="$options.ext.getStatusColor(instance.status)"/>
-<!--        <q-icon name="fas fa-play"/>-->
         {{ instance.name }}
         <q-badge>
           v{{ instance.version }}
@@ -27,7 +24,7 @@
           <q-item-label>{{ instance.error.message }}</q-item-label>
         </q-item-section>
         <template v-slot:action>
-          <q-btn icon="refresh" flat color="white" :label="$appt('retry')"/>
+          <q-btn :loading="resolving" icon="refresh" flat color="white" :label="$appt('retry')" @click="resolve"/>
         </template>
       </q-banner>
     </div>
@@ -115,7 +112,8 @@ export default {
       prcs: null,
       variablesMap: {},
       variableLoading: [],
-      canceling: false
+      canceling: false,
+      resolving: false
     }
   },
   computed: {
@@ -140,6 +138,8 @@ export default {
       this.instance.events.forEach(event => {
         if (event.elementType == "SEQUENCE_FLOW")
           return;
+        if(event.status == "RESOLVED")
+          return
         if (events[event.elementId] && events[event.elementId].error == null) {
           events[event.elementId].error = event.error
           events[event.elementId].status = event.status
@@ -190,6 +190,20 @@ export default {
         .then(res => this.loadInstance())
         .catch(this.$throw)
         .finally(() => this.canceling = false)
+    },
+    resolve() {
+      if (this.resolving)
+        return
+      this.resolving = true
+      let incidentElement = null
+      this.instance.events.forEach(event => {
+        if (event.status == 'INCIDENT')
+          incidentElement = event
+      })
+      this.instancesAPi.resolve(this.instance.id, incidentElement.id, this.client_.cid)
+        .then(() => this.loadInstance())
+        .catch(this.$throw)
+        .finally(() => this.resolving = false)
     }
   },
   mounted() {

@@ -11,8 +11,8 @@
     "build": "quasar build"
   },
   "dependencies": {
-    "@dustlight/flow-client-axios-js": "*",
-    "@dustlight/fun-client-axios-js": "*",
+    "@dustlight/flow-client-axios-js": "0.1.5-alpha",
+    "@dustlight/fun-client-axios-js": "0.0.3-alpha",
     "@quasar/extras": "^1.0.0",
     "axios": "^0.21.1",
     "camunda-bpmn-js": "^0.12.2",
