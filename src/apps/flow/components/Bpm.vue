@@ -39,7 +39,7 @@ export default {
         return false
       }
     },
-    instance:{
+    instance: {
       type: Object
     }
   },
@@ -79,7 +79,7 @@ export default {
           let canvas = viewer.get('canvas')
 
           this.instance.events.forEach(event => {
-            if(event.elementType == 'PROCESS')
+            if (event.elementType == 'PROCESS' || event.status == 'RESOLVED')
               return
             let shape = registry.get(event.elementId)
             // console.log(event)
@@ -91,7 +91,14 @@ export default {
             //   html: `<div style="background-color: rgba(33,186,69,0.3); width: ${shape.width}px;height: ${shape.height}px;"></div>`
             // });
 
-            canvas.addMarker(event.elementId, event.status == 'INCIDENT' ? 'highlight-red' : 'highlight-green');
+            let clazz = 'highlight-grey'
+            if (event.status == 'INCIDENT')
+              clazz = 'highlight-red'
+            else if (event.status == 'CANCELED' || event.status == 'COMPLETED')
+              clazz = 'highlight-grey'
+            else if (event.status == 'ACTIVE')
+              clazz = 'highlight-green'
+            canvas.addMarker(event.elementId, clazz);
           })
         }
       }).catch(err => {
@@ -108,7 +115,7 @@ export default {
     xml() {
       this.load()
     },
-    scale(){
+    scale() {
       this.viewer.get('canvas').zoom(this.scale)
     }
   },
@@ -119,15 +126,15 @@ export default {
         container: '#' + this.canvasId,
         additionalModules: [TouchModule]
       })
-      :new BpmnModdle({
-      container: '#' + this.canvasId,
-      propertiesPanel: {
-        parent: '#' + this.planeId
-      },
-      additionalModules: [
-        TouchModule,
-      ]
-    })
+      : new BpmnModdle({
+        container: '#' + this.canvasId,
+        propertiesPanel: {
+          parent: '#' + this.planeId
+        },
+        additionalModules: [
+          TouchModule,
+        ]
+      })
     this.load()
   }
 }
@@ -138,8 +145,14 @@ export default {
   fill: rgba(174, 243, 174, 0.93) !important;
   stroke: rgba(0, 128, 0, 0.84) !important;
 }
+
 .highlight-red:not(.djs-connection) .djs-visual > :nth-child(1) {
   fill: rgb(245, 184, 183) !important;
   stroke: rgb(213, 13, 7) !important;
+}
+
+.highlight-grey:not(.djs-connection) .djs-visual > :nth-child(1) {
+  fill: rgb(197, 189, 189) !important;
+  stroke: rgb(87, 85, 85) !important;
 }
 </style>
