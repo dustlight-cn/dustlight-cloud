@@ -15,6 +15,9 @@ export default {
   createdAt: "创建时间",
   updatedAt: "更新时间",
   variables: "变量",
+  variableName: "变量名",
+  variableValue: "变量值",
+  notEmpty: "不可为空！",
 
   menu: {
     "processes": "流程",

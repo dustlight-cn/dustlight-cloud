@@ -9,11 +9,16 @@
         <q-skeleton type="text" width="4em"/>
       </div>
       <div v-else class="text-subtitle1">
-        <q-icon size="2em" :name="$options.ext.getStatusIcon(instance.status)" :color="$options.ext.getStatusColor(instance.status)"/>
-        {{ instance.name }}
-        <q-badge>
-          v{{ instance.version }}
-        </q-badge>
+        <q-icon size="2em" :name="$options.ext.getStatusIcon(instance.status)"
+                :color="$options.ext.getStatusColor(instance.status)"/>
+        <q-btn flat dense no-caps
+               target="_blank"
+               :to="{name: $options.app + '/' + 'process',params:{name: instance.name},query:{version: instance.version}}">
+          {{ instance.name }}
+          <q-badge class="q-ml-xs">
+            v{{ instance.version }}
+          </q-badge>
+        </q-btn>
         <span> / </span>
         <span class="text-caption">{{ $route.params.id }}</span>
       </div>
@@ -61,9 +66,9 @@
               <q-card>
                 <q-card-section>
                   <div class="text-subtitle2">{{ $appt('createdAt') }}</div>
-                  <div class="text-caption">{{ $moment(event.createdAt) }}</div>
+                  <div class="text-caption text-grey">{{ $moment(event.createdAt) }}</div>
                   <div class="text-subtitle2">{{ $appt('updatedAt') }}</div>
-                  <div class="text-caption">{{ $moment(event.updatedAt) }}</div>
+                  <div class="text-caption text-grey">{{ $moment(event.updatedAt) }}</div>
                 </q-card-section>
                 <q-card-section>
                   <div class="text-subtitle2">{{ $appt('variables') }}</div>
@@ -72,7 +77,8 @@
                       <q-spinner-gears color="primary" size="4em"/>
                     </div>
                     <q-list separator v-else="variablesMap[event.elementId]">
-                      <q-item clickable v-ripple v-for="(variable,index) in variablesMap[event.elementId]" :key="index">
+                      <q-item @click="() => setVariable(variable,event,index)" clickable v-ripple
+                              v-for="(variable,index) in variablesMap[event.elementId]" :key="index">
                         <q-item-section>
                           <q-item-label overline style="word-break: break-all">{{ index }}</q-item-label>
                         </q-item-section>
@@ -82,18 +88,25 @@
                           </q-item-label>
                         </q-item-section>
                       </q-item>
-
-                      <q-item>
-                        <q-item-section>
-                          <q-input filled v-model="newVariables.key"/>
-                        </q-item-section>
-                        <q-item-section>
-                          <q-input filled v-model="newVariables.value"/>
-                        </q-item-section>
-                        <q-item-section side>
-                          <q-btn flat round icon="add"/>
-                        </q-item-section>
-                      </q-item>
+                      <q-separator/>
+                      <q-form @submit="()=> addVariable(event)">
+                        <q-item>
+                          <q-item-section>
+                            <q-input :rules="notEmpty" hide-hint hide-bottom-space dense
+                                     :disable="variableAdding.indexOf(event.elementId) > -1"
+                                     :label="$appt('variableName')" filled v-model="newVariables.key"/>
+                          </q-item-section>
+                          <q-item-section>
+                            <q-input :rules="notEmpty" hide-hint hide-bottom-space dense
+                                     :disable="variableAdding.indexOf(event.elementId) > -1"
+                                     :label="$appt('variableValue')" filled v-model="newVariables.value"/>
+                          </q-item-section>
+                          <q-item-section side>
+                            <q-btn type="submit"
+                                   :loading="variableAdding.indexOf(event.elementId) > -1" flat round icon="add"/>
+                          </q-item-section>
+                        </q-item>
+                      </q-form>
                     </q-list>
                   </q-form>
                 </q-card-section>
@@ -103,7 +116,8 @@
         </q-list>
       </div>
       <div class=" q-mt-sm q-gutter-sm text-right">
-        <q-btn v-if="instance.status != 'COMPLETED' && instance.status != 'CANCELED' " no-caps :loading="canceling" flat
+        <q-btn v-if="instance.status != 'COMPLETED' && instance.status != 'CANCELED' " no-caps :loading="canceling"
+               flat
                :icon="$options.ext.getStatusIcon('CANCELED')" @click="cancel" :label="$appt('cancel')"/>
       </div>
 
@@ -117,6 +131,7 @@
 <script>
 import ClientRequiredAdaptiveLayout from "src/components/container/ClientRequiredAdaptiveLayout";
 import Bpm from "../components/Bpm";
+import EditVariable from "../components/EditVariable";
 
 export default {
   name: "Instance",
@@ -131,9 +146,11 @@ export default {
       prcs: null,
       variablesMap: {},
       variableLoading: [],
-      newVariables: {key: "name", value: "value"},
+      newVariables: {key: "", value: ""},
       canceling: false,
-      resolving: false
+      resolving: false,
+      variableAdding: [],
+      notEmpty: [val => val != null && val.trim().length > 0 || this.$appt('notEmpty')]
     }
   },
   computed: {
@@ -158,7 +175,7 @@ export default {
       this.instance.events.forEach(event => {
         if (event.elementType == "SEQUENCE_FLOW")
           return;
-        if(event.status == "RESOLVED")
+        if (event.status == "RESOLVED")
           return
         if (events[event.elementId] && events[event.elementId].error == null) {
           events[event.elementId].error = event.error
@@ -187,8 +204,11 @@ export default {
       p.then(res => {
         let instance = res.data
         this.instance = instance
-        return this.processesApi.getProcess1(instance.name, instance.version, this.client_.cid)
-          .then(res => this.prcs = res.data)
+        if (this.prcs == null)
+          return this.processesApi.getProcess1(instance.name, instance.version, this.client_.cid)
+            .then(res => this.prcs = res.data)
+        else
+          return res
       })
         .catch(this.$throw)
         .finally(() => this.loading = false)
@@ -225,12 +245,42 @@ export default {
         .catch(this.$throw)
         .finally(() => this.resolving = false)
     },
-    setVariable(a,b) {
-      console.log(a,b)
+    setVariable(value, event, key) {
+      const buildMap = (val) => {
+        return `{"${key}":${val}}`
+      }
+      this.$q.dialog({
+        component: EditVariable,
+        parent: this,
+        componentProps: {
+          varName: key,
+          varVal: value,
+          api: (val) => this.instancesAPi.setInstanceVariables(this.instance.id, event.id, buildMap(val), this.client_.cid)
+        }
+        // ...更多属性...
+      })
+        .onOk(val => {
+          this.variablesMap[event.elementId][key] = val
+        })
+    },
+    addVariable(event) {
+      if (this.variableAdding.indexOf(event.elementId) > -1)
+        return
+      this.variableAdding.push(event.elementId)
+      this.instancesAPi.setInstanceVariables(this.instance.id,
+        event.id,
+        `{"${this.newVariables.key}":${this.newVariables.value}}`,
+        this.client_.cid)
+        .then(() => {
+          this.variablesMap[event.elementId][this.newVariables.key] = this.newVariables.value
+          this.newVariables.key = ""
+          this.newVariables.value = ""
+        })
+        .catch(this.$throw)
+        .finally(() => this.variableAdding.splice(this.variableAdding.indexOf(event.elementId), 1))
     }
   },
   mounted() {
-    this.setVariable(1,2)
   }
 }
 </script>

@@ -16,6 +16,9 @@ export default {
   createdAt: "Created At",
   updatedAt: "Updated At",
   variables: "Variables",
+  variableName: "Variable Name",
+  variableValue: "Variable Value",
+  notEmpty: "Can not be empty!",
 
   menu: {
     "processes": "Process",
