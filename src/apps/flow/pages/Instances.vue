@@ -124,7 +124,7 @@ export default {
     loadInstances() {
       if (!this.loading) {
         this.loading = true
-        this.instancesApi.getInstances(this.$route.query.name, this.$route.query.version, undefined, this.page - 1, this.pageSize, this.client_.cid )
+        this.instancesApi.getInstances(this.$route.query.name, this.$route.query.version, undefined, this.page - 1, this.pageSize, this.client_.cid)
           .then(res => {
             this.instances = res.data
           })
