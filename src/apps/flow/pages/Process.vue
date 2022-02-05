@@ -34,6 +34,14 @@
                 {{ $appt('run') }}
               </q-item-section>
             </q-item>
+            <q-item clickable v-ripple v-close-popup :disable="loading" @click="showTriggers">
+              <q-item-section avatar>
+                <q-icon name="cable"/>
+              </q-item-section>
+              <q-item-section>
+                {{ $appt('menu.triggers') }}
+              </q-item-section>
+            </q-item>
           </q-list>
         </template>
       </q-btn-dropdown>
@@ -61,6 +69,7 @@
 import ClientRequiredAdaptiveLayout from "src/components/container/ClientRequiredAdaptiveLayout";
 import Bpm from "../components/Bpm";
 import RunProcess from "../components/RunProcess";
+import ProcessTrigger from "../components/ProcessTrigger";
 
 export default {
   name: "Process",
@@ -90,6 +99,13 @@ export default {
      */
     instancesApi() {
       return this.$options.ext.instancesApi(this.token_.access_token)
+    },
+    /**
+     *
+     * @returns {TriggersApi}
+     */
+    triggersApi() {
+      return this.$options.ext.triggersApi(this.token_.access_token)
     }
   },
   watch: {
@@ -140,9 +156,27 @@ export default {
           variablesLabel: this.$appt('variables'),
           nameLabel: this.$appt('variableName'),
           valueLabel: this.$appt('variableValue'),
-          rules: [ val => val && val.trim().length > 0 || this.$appt('notEmpty')],
+          rules: [val => val && val.trim().length > 0 || this.$appt('notEmpty')],
           api: (variables) => this.instancesApi.createInstance(this.prcs.name, variables, this.client_.cid)
             .catch(this.$throw)
+        }
+      })
+    },
+    showTriggers() {
+      this.$q.dialog({
+        component: ProcessTrigger,
+        parent: this,
+        componentProps: {
+          title: this.$appt('menu.triggers'),
+          eventLabel: this.$appt('triggerEvent'),
+          getKeys: (opt) => this.triggersApi.getTriggerKeys(this.prcs.name, opt, this.client_.cid)
+            .catch(this.$throw),
+          getOptions: () => this.triggersApi.getOperations()
+            .catch(this.$throw),
+          gotoTrigger: (key, opt) => this.$router.push({
+            name: this.$options.app + '/triggers',
+            query: {key: key, opt: opt}
+          })
         }
       })
     }

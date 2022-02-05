@@ -28,6 +28,11 @@ export default {
   messageName: "消息名称",
   messageKey: "订阅关联键",
 
+  triggerKey: "表单名称",
+  triggerEvent: "事件",
+  addTrigger: "添加触发器",
+  processName: "流程名称",
+
   menu: {
     "processes": "流程",
     "instances": "实例",

@@ -29,6 +29,11 @@ export default {
   messageName: "Message Name",
   messageKey: "Subscription Correlation Key",
 
+  triggerKey: "Form Name",
+  triggerEvent: "Event",
+  addTrigger: "Add Trigger",
+  processName: "Process Name",
+
   menu: {
     "processes": "Process",
     "instances": "Instance",
