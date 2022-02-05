@@ -32,6 +32,7 @@ export default {
   menu: {
     "processes": "Process",
     "instances": "Instance",
-    "message": "Message"
+    "message": "Message",
+    "triggers": "Triggers"
   }
 };

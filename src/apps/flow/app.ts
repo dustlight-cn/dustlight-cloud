@@ -27,6 +27,12 @@ const app: App = {
       routeName: "message",
       i18nKey: "menu.message",
       icon: "mail"
+    },
+    {
+      name: "triggers",
+      routeName: "triggers",
+      i18nKey: "menu.triggers",
+      icon: "cable"
     }
   ]
 }

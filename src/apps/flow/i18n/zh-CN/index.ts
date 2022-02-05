@@ -31,6 +31,7 @@ export default {
   menu: {
     "processes": "流程",
     "instances": "实例",
-    "message": "消息"
+    "message": "消息",
+    "triggers": "触发器"
   }
 };

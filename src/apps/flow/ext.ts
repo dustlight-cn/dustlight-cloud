@@ -1,4 +1,4 @@
-import {Configuration, ProcessesApi, InstancesApi, MessagesApi} from '@dustlight/flow-client-axios-js'
+import {Configuration, ProcessesApi, InstancesApi, MessagesApi, TriggersApi} from '@dustlight/flow-client-axios-js'
 
 const endpoint = "https://flow.dustlight.cn"
 
@@ -7,6 +7,7 @@ declare interface Ext {
   instancesApi: (token: any) => InstancesApi
   processApi: (token: any) => ProcessesApi,
   messagesApi: (token: any) => MessagesApi,
+  triggersApi: (token: any) => TriggersApi,
   getStatusColor: (status: string) => string,
   getStatusIcon: (status: string) => string
 }
@@ -16,6 +17,7 @@ const ext: Ext = {
   instancesApi: (token: any) => new InstancesApi(new Configuration({basePath: endpoint, accessToken: token})),
   processApi: (token: any) => new ProcessesApi(new Configuration({basePath: endpoint, accessToken: token})),
   messagesApi: (token: any) => new MessagesApi(new Configuration({basePath: endpoint, accessToken: token})),
+  triggersApi: (token: any) => new TriggersApi(new Configuration({basePath: endpoint, accessToken: token})),
   getStatusColor(status) {
     switch (status) {
       case 'ACTIVE':
