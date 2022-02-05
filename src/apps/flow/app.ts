@@ -14,19 +14,19 @@ const app: App = {
       name: "processes",
       routeName: "processes",
       i18nKey: "menu.processes",
-      icon: "fas fa-code-branch"
+      icon: "account_tree"
     },
     {
       name: "instances",
       routeName: "instances",
       i18nKey: "menu.instances",
-      icon: "fas fa-play"
+      icon: "play_arrow"
     },
     {
       name: "message",
       routeName: "message",
       i18nKey: "menu.message",
-      icon: "email"
+      icon: "mail"
     }
   ]
 }

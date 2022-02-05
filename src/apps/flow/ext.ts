@@ -33,13 +33,13 @@ const ext: Ext = {
   getStatusIcon(status) {
   switch (status) {
     case 'ACTIVE':
-      return 'fas fa-play';
+      return 'play_arrow';
     case 'INCIDENT':
       return 'error';
     case 'RESOLVE':
-      return 'fas fa-refresh';
+      return 'replay';
     case 'CANCELED':
-      return 'fas fa-times'
+      return 'close'
     case 'COMPLETED':
       return 'check'
     default:

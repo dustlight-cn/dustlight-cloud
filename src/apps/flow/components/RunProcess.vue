@@ -2,7 +2,7 @@
   <q-dialog :persistent="creating" ref="dialog">
     <q-card class="q-dialog-plugin">
       <q-card-section class="text-subtitle1">
-        <q-icon name="fas fa-play"/>
+        <q-icon name="play_arrow"/>
         {{ title }}
       </q-card-section>
       <q-card-section>

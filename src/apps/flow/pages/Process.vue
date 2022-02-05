@@ -8,7 +8,7 @@
     <div class="q-pb-md">
       <q-btn-dropdown v-if="this.$route.params.name" flat no-caps>
         <template v-slot:label class="text-subtitle1">
-          <q-icon name="fas fa-code-branch"/>
+          <q-icon name="account_tree"/>
           {{ $route.params.name }}
           <q-badge class="q-ml-xs">
             <q-skeleton v-if="loading || !prcs" type="text" width="1em"/>
@@ -20,7 +20,7 @@
             <q-item :disable="loading"
                     :to="{name: $options.app + '/instances',query:{name: prcs.name,version: prcs.version}}">
               <q-item-section avatar>
-                <q-icon name="fas fa-eye"/>
+                <q-icon name="visibility"/>
               </q-item-section>
               <q-item-section>
                 {{ $appt('checkInstance') }}
@@ -28,7 +28,7 @@
             </q-item>
             <q-item clickable v-ripple v-close-popup :disable="loading" @click="run">
               <q-item-section avatar>
-                <q-icon name="fas fa-play"/>
+                <q-icon name="play_arrow"/>
               </q-item-section>
               <q-item-section>
                 {{ $appt('run') }}
@@ -38,7 +38,7 @@
         </template>
       </q-btn-dropdown>
       <div v-else>
-        <q-icon name="fas fa-code-branch"/>
+        <q-icon name="account_tree"/>
         {{ $appt('newProcess') }}
       </div>
     </div>

@@ -7,7 +7,7 @@
     <q-list bordered separator v-if="loading">
       <q-item v-for="index in 5" :key="index">
         <q-item-section avatar>
-          <q-icon name="fas fa-code-branch"/>
+          <q-icon name="account_tree"/>
         </q-item-section>
         <q-item-section>
           <q-item-label>
@@ -31,7 +31,7 @@
                 :to="{name:$options.app + '/process',params:{name:process.name}}"
                 v-ripple>
           <q-item-section avatar>
-            <q-icon name="fas fa-code-branch"/>
+            <q-icon name="account_tree"/>
           </q-item-section>
           <q-item-section>
             <q-item-label>
