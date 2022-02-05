@@ -21,6 +21,12 @@ const app: App = {
       routeName: "instances",
       i18nKey: "menu.instances",
       icon: "fas fa-play"
+    },
+    {
+      name: "message",
+      routeName: "message",
+      i18nKey: "menu.message",
+      icon: "email"
     }
   ]
 }

@@ -15,6 +15,8 @@ export default {
 
   retry: "Retry",
 
+  send: "Publish",
+
   newProcess: "New Process",
 
   createdAt: "Created At",
@@ -24,8 +26,12 @@ export default {
   variableValue: "Variable Value",
   notEmpty: "Can not be empty!",
 
+  messageName: "Message Name",
+  messageKey: "Subscription Correlation Key",
+
   menu: {
     "processes": "Process",
-    "instances": "Instance"
+    "instances": "Instance",
+    "message": "Message"
   }
 };

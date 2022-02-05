@@ -14,6 +14,8 @@ export default {
   emptyInstance: "暂时没有流程实例",
   retry: "重试",
 
+  send: "发布",
+
   newProcess: "新建流程",
 
   createdAt: "创建时间",
@@ -23,8 +25,12 @@ export default {
   variableValue: "变量值",
   notEmpty: "不可为空！",
 
+  messageName: "消息名称",
+  messageKey: "订阅关联键",
+
   menu: {
     "processes": "流程",
-    "instances": "实例"
+    "instances": "实例",
+    "message": "消息"
   }
 };
