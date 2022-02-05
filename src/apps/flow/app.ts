@@ -33,6 +33,12 @@ const app: App = {
       routeName: "triggers",
       i18nKey: "menu.triggers",
       icon: "cable"
+    },
+    {
+      name: "userTasks",
+      routeName: "user-tasks",
+      i18nKey: "menu.userTasks",
+      icon: "person"
     }
   ]
 }

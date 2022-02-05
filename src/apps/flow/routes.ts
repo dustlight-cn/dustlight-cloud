@@ -35,6 +35,11 @@ const routes: RouteRecordRaw[] = [
     name: "triggers",
     component: () => import("./pages/Triggers.vue"),
     path: "/triggers"
+  },
+  {
+    name: "user-tasks",
+    component: () => import("./pages/UserTasks.vue"),
+    path: "/user-tasks"
   }
 ]
 

@@ -32,6 +32,7 @@ export default {
     "processes": "流程",
     "instances": "实例",
     "message": "消息",
-    "triggers": "触发器"
+    "triggers": "触发器",
+    "userTasks": "用户任务"
   }
 };

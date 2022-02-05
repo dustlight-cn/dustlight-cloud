@@ -33,6 +33,7 @@ export default {
     "processes": "Process",
     "instances": "Instance",
     "message": "Message",
-    "triggers": "Triggers"
+    "triggers": "Trigger",
+    "userTasks": "User Task"
   }
 };
