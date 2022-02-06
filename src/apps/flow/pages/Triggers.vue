@@ -4,7 +4,8 @@
     v-slot="{client,user,token}">
     {{ "", client_ = client, user_ = user, token_ = token }}
 
-    <div class="q-gutter-sm row">
+
+    <div class="q-gutter-sm row" style="max-width: 800px;margin: 0 auto">
       <q-input :label="$appt('triggerKey')" clearable class="col" :loading="loading" :debounce="500" filled
                v-model="key"/>
 

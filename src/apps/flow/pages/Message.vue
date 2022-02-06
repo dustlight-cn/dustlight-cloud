@@ -4,7 +4,7 @@
     v-slot="{client,user,token}">
     {{ "", client_ = client, user_ = user, token_ = token }}
 
-    <q-form class="q-gutter-sm" @submit="send">
+    <q-form class="q-gutter-sm" style="max-width: 600px;margin: 0 auto" @submit="send">
       <q-input :rules="rules" :disable="sending" filled v-model="model.key" :label="$appt('messageName')"/>
       <q-input :rules="rules" :disable="sending" filled v-model="model.val" :label="$appt('messageKey')"/>
       <div class="text-right q-mt-sm">
