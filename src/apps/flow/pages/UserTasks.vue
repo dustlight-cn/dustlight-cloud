@@ -36,11 +36,11 @@
           <q-item-section>
             <q-item-label>
               {{ task }}
-<!--              <q-badge>v{{ process.version }}</q-badge>-->
+              <!--              <q-badge>v{{ process.version }}</q-badge>-->
             </q-item-label>
-<!--            <q-item-label caption>-->
-<!--              {{ $moment(process.createdAt) }}-->
-<!--            </q-item-label>-->
+            <!--            <q-item-label caption>-->
+            <!--              {{ $moment(process.createdAt) }}-->
+            <!--            </q-item-label>-->
           </q-item-section>
           <q-item-section side>
             <q-icon name="keyboard_arrow_right"/>
@@ -82,7 +82,10 @@ export default {
       token_: null,
       client_: null,
       loading: false,
-      tasks:[],
+      tasks: null,
+      status: this.$route.query.status,
+      name: this.$route.query.name,
+      version: this.$route.query.version,
       pageSize: 10,
       page: 1
     }
@@ -96,8 +99,27 @@ export default {
       return this.$options.ext.userTasksApi(this.token_.access_token)
     }
   },
+  watch: {
+    token_() {
+      this.loadTasks()
+    },
+    client_() {
+      this.loadTasks()
+    }
+  },
   methods: {
-
+    loadTasks() {
+      if (this.loading)
+        return
+      this.loading = true
+      this.userTasksApi.getUserTasks(this.name, this.version, this.status, this.page - 1, this.pageSize, this.client_.cid)
+        .then(res => this.tasks = res.data)
+        .catch(this.$throw)
+        .finally(() => this.loading = false)
+    },
+    isDone(task) {
+      return task && task.completedAt
+    }
   }
 }
 </script>
