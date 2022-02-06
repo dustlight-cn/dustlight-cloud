@@ -40,6 +40,11 @@ const routes: RouteRecordRaw[] = [
     name: "user-tasks",
     component: () => import("./pages/UserTasks.vue"),
     path: "/user-tasks"
+  },
+  {
+    name: "user-task",
+    component: () => import("./pages/UserTask.vue"),
+    path: "/user-task/:id"
   }
 ]
 

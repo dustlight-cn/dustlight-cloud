@@ -42,6 +42,15 @@
                 {{ $appt('menu.triggers') }}
               </q-item-section>
             </q-item>
+            <q-item :disable="loading"
+                    :to="{name: $options.app + '/user-tasks',query:{name: prcs.name,version: prcs.version}}">
+              <q-item-section avatar>
+                <q-icon name="person"/>
+              </q-item-section>
+              <q-item-section>
+                {{ $appt('menu.userTasks') }}
+              </q-item-section>
+            </q-item>
           </q-list>
         </template>
       </q-btn-dropdown>

@@ -34,6 +34,13 @@ export default {
   addTrigger: "添加触发器",
   processName: "流程名称",
 
+  taskStatusLabel: "状态",
+  taskStatus: {
+    all: "全部",
+    active: "待办",
+    done: "已完成"
+  },
+
   menu: {
     "processes": "流程",
     "instances": "实例",

@@ -35,6 +35,13 @@ export default {
   addTrigger: "Add Trigger",
   processName: "Process Name",
 
+  taskStatusLabel: "Status",
+  taskStatus: {
+    all: "All",
+    active: "To Do",
+    done: "Done"
+  },
+
   menu: {
     "processes": "Process",
     "instances": "Instance",
