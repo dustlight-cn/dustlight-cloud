@@ -12,6 +12,7 @@ export default {
 
   emptyProcesses: "This app has not yet created any flows",
   emptyInstance: "There are no process instances at this time",
+  emptyTasks: "There are no user tasks at this time",
 
   retry: "Retry",
 

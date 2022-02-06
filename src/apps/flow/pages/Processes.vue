@@ -5,7 +5,7 @@
     {{ "", client_ = client, user_ = user, token_ = token }}
 
     <q-list bordered separator v-if="loading">
-      <q-item v-for="index in 5" :key="index">
+      <q-item v-for="index in pageSize" :key="index">
         <q-item-section avatar>
           <q-icon name="account_tree"/>
         </q-item-section>
@@ -63,7 +63,6 @@
       <div class="text-center" v-else>
         <div class="text-grey">
           <div>{{ $appt("emptyProcesses") }}</div>
-          <!--          <div class="q-mt-md"><q-btn no-caps color="primary" :label="$appt('create')" :to="{name: $options.app + '/create' }"></q-btn></div>-->
         </div>
       </div>
     </div>

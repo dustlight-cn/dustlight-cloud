@@ -5,7 +5,7 @@
     {{ "", client_ = client, user_ = user, token_ = token }}
 
     <q-list bordered separator v-if="loading">
-      <q-item v-for="index in 5" :key="index">
+      <q-item v-for="index in pageSize" :key="index">
         <q-item-section avatar>
           <q-skeleton type="text" width="2em"/>
         </q-item-section>

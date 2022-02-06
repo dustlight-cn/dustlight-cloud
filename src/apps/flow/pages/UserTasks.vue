@@ -4,6 +4,69 @@
     v-slot="{client,user,token}">
     {{ "", client_ = client, user_ = user, token_ = token }}
 
+    <q-list bordered separator v-if="loading">
+      <q-item v-for="index in pageSize" :key="index">
+        <q-item-section avatar>
+          <q-icon name="person"/>
+        </q-item-section>
+        <q-item-section>
+          <q-item-label>
+            <q-skeleton type="text" width="2em"/>
+            <q-badge>
+              <q-skeleton type="text" width="1em"/>
+            </q-badge>
+          </q-item-label>
+        </q-item-section>
+        <q-item-section side>
+          <q-item-label>
+            <q-skeleton type="text" width="2em"/>
+          </q-item-label>
+        </q-item-section>
+      </q-item>
+    </q-list>
+    <div v-else>
+      <q-list bordered separator v-if="tasks && tasks.data && tasks.data.length > 0">
+        <q-item v-for="(task,index) in tasks.data" :key="index"
+                clickable
+                :to="{name:$options.app + '/task',params:{id:task.id}}"
+                v-ripple>
+          <q-item-section avatar>
+            <q-icon name="person"/>
+          </q-item-section>
+          <q-item-section>
+            <q-item-label>
+              {{ task }}
+<!--              <q-badge>v{{ process.version }}</q-badge>-->
+            </q-item-label>
+<!--            <q-item-label caption>-->
+<!--              {{ $moment(process.createdAt) }}-->
+<!--            </q-item-label>-->
+          </q-item-section>
+          <q-item-section side>
+            <q-icon name="keyboard_arrow_right"/>
+            <!--                      <q-btn round flat dense no-caps icon="link" @click="()=>openFunction(fun)" :disable="!config"/>-->
+          </q-item-section>
+          <!--          <q-item-section side>-->
+          <!--            <q-btn :loading="functionDeleting.indexOf(fun.name) > -1" round dense icon="delete" flat-->
+          <!--                   @click="()=>deleteFunction(fun)"/>-->
+          <!--          </q-item-section>-->
+        </q-item>
+        <div v-if="tasks && tasks.count > pageSize " class="flex flex-center">
+          <q-pagination
+            v-model="page"
+            :max="Math.ceil(tasks.count/pageSize)"
+            input
+            color="primary"
+          />
+        </div>
+      </q-list>
+      <div class="text-center" v-else>
+        <div class="text-grey">
+          <div>{{ $appt("emptyTasks") }}</div>
+        </div>
+      </div>
+    </div>
+
   </client-required-adaptive-layout>
 </template>
 
@@ -18,6 +81,10 @@ export default {
       user_: null,
       token_: null,
       client_: null,
+      loading: false,
+      tasks:[],
+      pageSize: 10,
+      page: 1
     }
   },
   computed: {
@@ -29,7 +96,9 @@ export default {
       return this.$options.ext.userTasksApi(this.token_.access_token)
     }
   },
-  methods: {}
+  methods: {
+
+  }
 }
 </script>
 
