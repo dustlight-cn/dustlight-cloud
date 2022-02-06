@@ -42,7 +42,7 @@
       <bpm v-else-if="prcs" ref="bpm" :instance="instance" :xml="prcs.data" :is-base64="true"/>
       <div class="q-mt-sm">
         <q-list bordered separator>
-          <q-expansion-item :group="instance.name + '_events'" v-for="(event,index) in computedEvents" :key="index"
+          <q-expansion-item style="word-break: break-all" :group="instance.name + '_events'" v-for="(event,index) in computedEvents" :key="index"
                             @before-show="()=>loadVariables(event)">
             <template v-slot:header>
               <q-item-section avatar>

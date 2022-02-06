@@ -26,7 +26,7 @@
     </q-list>
     <div v-else>
       <q-list bordered separator v-if="processes && processes.data && processes.data.length > 0">
-        <q-item v-for="(process,index) in processes.data" :key="index"
+        <q-item style="word-break: break-all" v-for="(process,index) in processes.data" :key="index"
                 clickable
                 :to="{name:$options.app + '/process',params:{name:process.name}}"
                 v-ripple>

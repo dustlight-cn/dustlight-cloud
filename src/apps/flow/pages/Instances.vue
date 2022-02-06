@@ -26,7 +26,7 @@
     </q-list>
     <div v-else>
       <q-list bordered separator v-if="instances && instances.data && instances.data.length > 0">
-        <q-item v-for="(instance,index) in instances.data" :key="index"
+        <q-item style="word-break: break-all" v-for="(instance,index) in instances.data" :key="index"
                 clickable
                 :to="{name:$options.app + '/instance',params:{id:instance.id}}"
                 v-ripple>
