@@ -46,9 +46,11 @@ export default {
   data() {
     return {
       viewer: null,
-      split: 80
+      split: 80,
+      loaded: false
     }
   },
+  emits: ['elementNames'],
   computed: {
     canvasId() {
       return 'Bpm_' + this._.uid + '_canvas'
@@ -81,11 +83,17 @@ export default {
           let registry = viewer.get('elementRegistry')
           let overlays = viewer.get('overlays')
           let canvas = viewer.get('canvas')
-
+          let elementNames = {}
           this.instance.events.forEach(event => {
+            if (event.elementId == null)
+              return
+            let elementName = this.getElementName(event.elementId)
+            if (elementName)
+              elementNames[event.elementId] = elementName
             if (event.elementType == 'PROCESS' || event.status == 'RESOLVED')
               return
-            let shape = registry.get(event.elementId)
+
+            // let shape = registry.get(event.elementId)
             // console.log(event)
             // overlays.add(event.elementId, {
             //   position: {
@@ -104,12 +112,25 @@ export default {
               clazz = 'highlight-green'
             canvas.addMarker(event.elementId, clazz);
           })
+          this.$emit('elementNames', elementNames)
         }
+        this.loaded = true
       }).catch(err => {
         const {warnings, message} = err;
         console.warn('something went wrong:', warnings, message);
         this.$throw(err)
+
+        this.loaded = false
       });
+    },
+    getElementName(elementId) {
+      if (elementId == null)
+        return null
+      let obj = this.viewer.get('elementRegistry').get(elementId)
+      return obj && obj.businessObject && obj.businessObject.name ? obj.businessObject.name : null
+    },
+    isReady() {
+      return this.loaded
     },
     export(format = false) {
       return this.viewer.saveXML({format: format}).then(res => {

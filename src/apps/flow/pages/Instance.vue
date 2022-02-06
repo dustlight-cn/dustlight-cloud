@@ -39,10 +39,12 @@
       <div v-if="loading" class="text-center">
         <q-spinner-gears color="primary" size="5em"/>
       </div>
-      <bpm v-else-if="prcs" ref="bpm" :instance="instance" :xml="prcs.data" :is-base64="true"/>
+      <bpm v-else-if="prcs" ref="bpm" :instance="instance" :xml="prcs.data" :is-base64="true"
+           @elementNames="(ns)=>this.elementNames=ns"/>
       <div class="q-mt-sm">
         <q-list bordered separator>
-          <q-expansion-item style="word-break: break-all" :group="instance.name + '_events'" v-for="(event,index) in computedEvents" :key="index"
+          <q-expansion-item style="word-break: break-all" :group="instance.name + '_events'"
+                            v-for="(event,index) in computedEvents" :key="index"
                             @before-show="()=>loadVariables(event)">
             <template v-slot:header>
               <q-item-section avatar>
@@ -55,6 +57,10 @@
                   <q-badge>
                     {{ event.elementType }}
                   </q-badge>
+                </q-item-label>
+                <q-item-label v-if="elementNames[event.elementId]"
+                              caption>
+                  {{ elementNames[event.elementId] }}
                 </q-item-label>
               </q-item-section>
               <q-item-section v-if="event.error">
@@ -150,6 +156,7 @@ export default {
       canceling: false,
       resolving: false,
       variableAdding: [],
+      elementNames: {},
       notEmpty: [val => val != null && val.trim().length > 0 || this.$appt('notEmpty')]
     }
   },
@@ -176,6 +183,8 @@ export default {
         if (event.elementType == "SEQUENCE_FLOW")
           return;
         if (event.status == "RESOLVED")
+          return
+        if (event.elementId == null)
           return
         if (events[event.elementId] && events[event.elementId].error == null) {
           events[event.elementId].error = event.error
