@@ -9,11 +9,18 @@
       <q-skeleton width="2em"/>
     </div>
     <div class="q-pb-md text-subtitle1" v-else>
-      <q-icon size="2em" :name="task.completedAt ? 'check' :  'person'"/>
       <q-btn flat dense no-caps
+             :icon="task.completedAt ? 'check' :  'person'"
              target="_blank"
+             :label="task.processName"
              :to="{name: $options.app + '/' + 'process',params:{name: task.processName}}">
-        {{ task.processName }}
+      </q-btn>
+      <span> / </span>
+      <q-btn flat dense no-caps
+             icon="play_arrow"
+             target="_blank"
+             :label="task.instanceId"
+             :to="{name: $options.app + '/' + 'instance',params:{id: task.instanceId}}">
       </q-btn>
       <span> / </span>
       <span class="text-caption">{{ task.id }}</span>
@@ -22,16 +29,29 @@
     <div class="q-pb-md" v-if="loading.task">
       <q-spinner-gears size="4em"/>
     </div>
-    <div class="q-pb-md" v-else>
-
-      {{ task }}
+    <div class="q-pb-md text-subtitle1" v-else-if="task">
+      {{ task.elementId }}
+      <q-list separator>
+        <q-item style="word-break: break-all" v-for="(val,key) in task.variables" :key="key">
+          <q-item-section>
+            <q-item-label overline>{{ key }}</q-item-label>
+          </q-item-section>
+          <q-item-section>
+            <q-item-label caption>{{ val }}</q-item-label>
+          </q-item-section>
+        </q-item>
+      </q-list>
     </div>
 
     <div class="q-pb-md" v-if="loading.form">
       <q-spinner-gears size="4em"/>
     </div>
     <div class="q-pb-md" v-else-if="form">
-      <json-form :schema="form.schema"/>
+      <json-form ref="jsonForm" :schema="form.schema"/>
+    </div>
+    <div class="text-right" v-if="task">
+      <span class="text-caption text-grey" v-if="task.completedAt">{{ $moment(task.completedAt) }}</span>
+      <q-btn :loading="loading.complete" @click="complete" v-else-if="form" :label="$q.lang.label.ok" color="primary"/>
     </div>
 
   </client-required-adaptive-layout>
@@ -53,7 +73,8 @@ export default {
       form: null,
       loading: {
         task: false,
-        form: false
+        form: false,
+        complete: false
       }
     }
   },
@@ -110,6 +131,15 @@ export default {
         })
         .catch(this.$throw)
         .finally(() => this.loading.task = false)
+    },
+    complete() {
+      if (this.loading.complete)
+        return
+      this.loading.complete = true
+      this.userTasksApi.completeUserTask(this.task.id, this.$refs.jsonForm.getValue(), this.client_.cid)
+        .then(() => this.task.completedAt = new Date().toISOString())
+        .catch(this.$throw)
+        .finally(() => this.loading.complete = false)
     }
   },
   mounted() {
