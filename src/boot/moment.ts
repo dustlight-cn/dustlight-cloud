@@ -8,5 +8,5 @@ declare module '@vue/runtime-core' {
 }
 
 export default boot(({ app }) => {
-  app.config.globalProperties.$moment = (date:any) => moment(date).format("YYYY-MM-DD hh:mm:ss")
+  app.config.globalProperties.$moment = (date:any) => moment(date).format("YYYY-MM-DD HH:mm:ss")
 });
