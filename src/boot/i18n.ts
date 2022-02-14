@@ -4,6 +4,12 @@ import {Quasar, LocalStorage} from 'quasar'
 
 import messages from 'src/i18n';
 
+declare module '@vue/runtime-core' {
+  interface ComponentCustomProperties {
+    $appt: Function;
+  }
+}
+
 export default boot(({ app }) => {
   const langIso = LocalStorage.getItem<string>('lang') || Quasar.lang.getLocale(); // ... some logic to determine it (use Cookies Plugin?)
 
