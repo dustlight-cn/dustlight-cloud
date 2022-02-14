@@ -22,13 +22,6 @@ export default {
     }
   },
   computed: {
-    /**
-     *
-     * @returns {TemplatesApi}
-     */
-    templatesApi() {
-      return this.$options.ext.templatesApi(this.token_.access_token)
-    }
   },
   methods: {
     getTemplateRoute(template) {

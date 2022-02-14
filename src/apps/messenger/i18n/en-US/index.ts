@@ -4,7 +4,11 @@
 export default {
   title: "Message",
 
-  menu:{
+  templateName: "Template Name",
+
+  notEmpty: "Can not be empty!",
+
+  menu: {
     "notifications": "Notification",
     "templates": "Template",
     "channels": "Channel",

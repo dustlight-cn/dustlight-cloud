@@ -59,6 +59,9 @@
           color="primary"
         />
       </div>
+      <div v-if="templates == null || templates.count == 0" class="text-center q-ma-md text-grey">
+        {{ $q.lang.table.noData }}
+      </div>
     </div>
   </div>
 </template>
