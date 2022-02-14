@@ -6,11 +6,18 @@ export default {
 
   newTemplate: "New Template",
   templateName: "Template Name",
-
-  notEmpty: "Can not be empty!",
-
   deleteTemplateTitle: "Delete Template",
   deleteTemplateMsg: "Are you sure to delete template \"{name}\"({id})?",
+
+  newChannel:"New Channel",
+  channelName:"Channel Name",
+  channelDescription: "Channel Description",
+  channelOwner: "Owner",
+  channelMember: "Members",
+  deleteChannelTitle: "Delete Channel",
+  deleteChannelMsg: "Are you sure to delete channel \"{name}\"({id})?",
+
+  notEmpty: "Can not be empty!",
 
   menu: {
     "notifications": "Notification",

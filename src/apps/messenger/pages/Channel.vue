@@ -16,7 +16,7 @@
       <div class="q-mb-md">
         <div class="text-subtitle2">
           <q-icon name="group"/>
-          {{ $appt("owner") }}
+          {{ $appt("channelOwner") }}
         </div>
         <div class="q-gutter-sm">
           <q-chip v-for="(uid,index) in channel.owner" :key="index" removable @remove="()=>removeOwner(uid)">
@@ -40,7 +40,7 @@
       <div class="q-mb-md">
         <div class="text-subtitle2">
           <q-icon name="group"/>
-          {{ $appt("member") }}
+          {{ $appt("channelMember") }}
         </div>
         <div class="q-gutter-sm">
           <q-chip v-for="(uid,index) in channel.member" :key="index" removable @remove="()=>removeMember(uid)">
