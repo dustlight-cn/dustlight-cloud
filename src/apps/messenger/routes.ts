@@ -7,6 +7,11 @@ const routes: RouteRecordRaw[] = [
     path: "/notifications"
   },
   {
+    name: "new-notification",
+    component: () => import("./pages/NewNotifications.vue"),
+    path: "/new-notification"
+  },
+  {
     name: "templates",
     component: () => import("./pages/Templates.vue"),
     path: "/templates"

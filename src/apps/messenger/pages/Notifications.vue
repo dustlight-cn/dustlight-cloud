@@ -96,6 +96,11 @@
         color="primary"
       />
     </div>
+
+    <q-page-sticky :offset="[18,18]">
+      <q-btn :to="{name:$options.app + '/new-notification',query:{ template: this.templateId,channel: this.channelId }}"
+             color="primary" round icon="add"/>
+    </q-page-sticky>
   </client-required-adaptive-layout>
 </template>
 

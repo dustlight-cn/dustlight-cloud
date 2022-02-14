@@ -20,6 +20,12 @@ function handleError(err: any) {
   return msg
 }
 
+declare module '@vue/runtime-core' {
+  interface ComponentCustomProperties {
+    $throw: Function;
+  }
+}
+
 export default boot(({app}) => {
 
   app.config.globalProperties.$throw = (e: any) => {

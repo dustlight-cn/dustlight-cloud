@@ -9,17 +9,23 @@ export default {
   deleteTemplateTitle: "删除模板",
   deleteTemplateMsg: "确定要删除模板 ”{name}“({id}) 吗？",
 
-  newChannel:"新建频道",
-  channelName:"频道名称",
+  newChannel: "新建频道",
+  channelName: "频道名称",
   channelDescription: "频道描述",
   channelOwner: "所有者",
   channelMember: "成员",
   deleteChannelTitle: "删除频道",
   deleteChannelMsg: "确定要删除频道 ”{name}“({id}) 吗？",
 
+  newNotification: "新建通知",
+  variables: "变量",
+  variableName: "变量名",
+  variableValue: "变量值",
+  send:"发送",
+
   notEmpty: "不可为空！",
 
-  menu:{
+  menu: {
     "notifications": "通知",
     "templates": "模板",
     "channels": "频道",
