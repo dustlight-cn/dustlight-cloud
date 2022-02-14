@@ -84,6 +84,7 @@
 
 <script>
 import ClientRequiredAdaptiveLayout from "../../../components/container/ClientRequiredAdaptiveLayout";
+import UserSelector from "../../../components/dialog/UserSelector";
 
 export default {
   name: "Channel",
@@ -133,6 +134,16 @@ export default {
     }
   },
   methods: {
+    loadUsers(...uids) {
+      this.usersApi.getUsers(uids)
+        .then(res => {
+          for (let i in res.data.data) {
+            let u = res.data.data[i]
+            this.userMap[u.uid] = u
+          }
+        })
+        .catch(this.$throw)
+    },
     loadChannel() {
       if (this.loading)
         return
@@ -146,71 +157,95 @@ export default {
             uids.push(...this.channel.owner)
           if (this.channel.member)
             uids.push(...this.channel.member)
-          if (uids.length > 0) {
-            this.usersApi.getUsers(uids)
-              .then(res => {
-                for (let i in res.data.data) {
-                  let u = res.data.data[i]
-                  this.userMap[u.uid] = u
-                }
-                console.log(this.userMap)
-              })
-              .catch(this.$throw)
+          let myId = this.user_.uid
+          if (uids.indexOf(myId) > -1) {
+            uids.splice(uids.indexOf(myId), 1)
           }
+          this.userMap[myId] = this.user_
+          if (uids.length > 0)
+            this.loadUsers(...uids)
         })
         .catch(this.$throw)
         .finally(() => this.loading = false)
     },
     save() {
-      // if (this.loading)
-      //   return
-      // this.loading = true
-      // this.templatesApi.updateTemplate(this.templateId, {
-      //   name: this.template.name,
-      //   content: this.template.content
-      // }, this.type, this.client_.cid)
-      //   .catch(this.$throw)
-      //   .finally(() => this.loading = false)
+      if (this.loading)
+        return
+      this.loading = true
+      this.channelsApi.updateChannel(this.channelId, {
+        name: this.channel.name,
+        description: this.channel.description,
+        owner: this.channel.owner,
+        members: this.channel.member
+      }, this.client_.cid)
+        .catch(this.$throw)
+        .finally(() => this.loading = false)
     },
     deleteChannel() {
-      // if (this.deleting)
-      //   return
-      // this.$q.dialog({
-      //   title: this.$appt('deleteTemplateTitle'),
-      //   message: this.$appt('deleteTemplateMsg', this.template),
-      //   cancel: {
-      //     color: "grey",
-      //     flat: true
-      //   },
-      //   ok: {
-      //     color: "negative"
-      //   }
-      // })
-      //   .onOk(() => {
-      //     if (this.deleting)
-      //       return
-      //     this.deleting = true
-      //     this.templatesApi.deleteTemplate(this.templateId, this.type, this.client_.cid)
-      //       .then(res => {
-      //         this.$router.push({
-      //           name: this.$options.app + "/templates"
-      //         })
-      //       })
-      //       .catch(this.$throw)
-      //       .finally(() => this.deleting = false)
-      //   })
+      if (this.deleting)
+        return
+      this.$q.dialog({
+        title: this.$appt('deleteChannelTitle'),
+        message: this.$appt('deleteChannelMsg', this.channel),
+        cancel: {
+          color: "grey",
+          flat: true
+        },
+        ok: {
+          color: "negative"
+        }
+      })
+        .onOk(() => {
+          if (this.deleting)
+            return
+          this.deleting = true
+          this.channelsApi.deleteChannel(this.channelId, this.client_.cid)
+            .then(res => {
+              this.$router.push({
+                name: this.$options.app + "/channels"
+              })
+            })
+            .catch(this.$throw)
+            .finally(() => this.deleting = false)
+        })
     },
     addOwner() {
-
+      this.$q.dialog({
+        component: UserSelector,
+        componentProps: {
+          token: this.token_.access_token
+        },
+      })
+        .onOk(user => {
+          if (this.channel.owner == null)
+            this.channel.owner = []
+          if (this.channel.owner.indexOf(user.uid) == -1) {
+            this.channel.owner.push(user.uid)
+            this.userMap[user.uid] = user
+          }
+        })
     },
     removeOwner(uid) {
-      this.channel.owner.splice(this.channel.owner.indexOf(uid))
+      this.channel.owner.splice(this.channel.owner.indexOf(uid), 1)
     },
     addMember() {
-
+      this.$q.dialog({
+        component: UserSelector,
+        componentProps: {
+          token: this.token_.access_token
+        },
+      })
+        .onOk(user => {
+          if (this.channel.member == null)
+            this.channel.member = []
+          if (this.channel.member.indexOf(user.uid) == -1) {
+            this.channel.member.push(user.uid)
+            this.userMap[user.uid] = user
+          }
+        })
     },
     removeMember(uid) {
-      this.channel.member.splice(this.channel.member.indexOf(uid))
+      this.channel.member.splice(this.channel.member.indexOf(uid), 1)
     },
   },
   mounted() {

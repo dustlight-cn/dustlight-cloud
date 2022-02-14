@@ -17,5 +17,7 @@ export default {
 
   notFound: "这里空空如也……",
 
-  empty: "空空如也。"
+  empty: "空空如也。",
+
+  userSelector:"用户选择"
 };

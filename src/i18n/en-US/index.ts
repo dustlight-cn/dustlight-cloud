@@ -17,5 +17,7 @@ export default {
 
   notFound: "Oops. Nothing here...",
 
-  empty: "No results."
+  empty: "No results.",
+
+  userSelector:"Select User"
 };
