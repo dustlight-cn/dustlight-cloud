@@ -43,7 +43,7 @@
           {{ $appt("channelMember") }}
         </div>
         <div class="q-gutter-sm">
-          <q-chip v-for="(uid,index) in channel.member" :key="index" removable @remove="()=>removeMember(uid)">
+          <q-chip v-for="(uid,index) in channel.members" :key="index" removable @remove="()=>removeMember(uid)">
             <template v-slot:default v-if="userMap[uid]">
               <auth-avatar :user="userMap[uid]"/>
               <span>{{
@@ -100,7 +100,7 @@ export default {
         name: "",
         description: "",
         owner: [],
-        member: [],
+        members: [],
       },
       channelId: this.$route.params.id,
       rules: [
@@ -155,8 +155,8 @@ export default {
           let uids = new Set()
           if (this.channel.owner)
             this.channel.owner.forEach(uid => uids.add(uid))
-          if (this.channel.member)
-            this.channel.member.forEach(uid => uids.add(uid))
+          if (this.channel.members)
+            this.channel.members.forEach(uid => uids.add(uid))
           uids.delete(this.user_.uid)
           this.userMap[this.user_.uid] = this.user_
           if (uids.size > 0)
@@ -173,7 +173,7 @@ export default {
         name: this.channel.name,
         description: this.channel.description,
         owner: this.channel.owner,
-        members: this.channel.member
+        members: this.channel.members
       }, this.client_.cid)
         .catch(this.$throw)
         .finally(() => this.loading = false)
@@ -233,16 +233,16 @@ export default {
         },
       })
         .onOk(user => {
-          if (this.channel.member == null)
-            this.channel.member = []
-          if (this.channel.member.indexOf(user.uid) == -1) {
-            this.channel.member.push(user.uid)
+          if (this.channel.members == null)
+            this.channel.members = []
+          if (this.channel.members.indexOf(user.uid) == -1) {
+            this.channel.members.push(user.uid)
             this.userMap[user.uid] = user
           }
         })
     },
     removeMember(uid) {
-      this.channel.member.splice(this.channel.member.indexOf(uid), 1)
+      this.channel.members.splice(this.channel.members.indexOf(uid), 1)
     },
   },
   mounted() {
