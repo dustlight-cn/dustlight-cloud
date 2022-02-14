@@ -1,11 +1,10 @@
 import {RouteRecordRaw} from "vue-router";
-import Test from './pages/Test.vue'
 
 const routes: RouteRecordRaw[] = [
   {
     name: "notifications",
     component: () => import("./pages/Notifications.vue"),
-    path: "/"
+    path: "/notifications"
   },
   {
     name: "templates",
