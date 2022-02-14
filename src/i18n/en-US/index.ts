@@ -15,5 +15,7 @@ export default {
   unauthorizedTips: "Please Sign In to View This Content",
   unselectClientTips: "Please Select a Client to View This Content",
 
-  notFound: "Oops. Nothing here..."
+  notFound: "Oops. Nothing here...",
+
+  empty: "No results."
 };

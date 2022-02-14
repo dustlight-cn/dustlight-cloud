@@ -13,7 +13,7 @@
       <q-editor :toolbar="toolbarOptions" ref="editor" :disable="loading" v-model="template.content"/>
       <div class="text-right q-gutter-sm">
 
-        <q-btn v-if="!loading" @click="deleteTemplate" icon="delete" color="negative" :loading="deleting"
+        <q-btn v-if="!loading" @click="deleteTemplate" flat icon="delete" color="negative" :loading="deleting"
                :label="$q.lang.label.remove"/>
         <q-btn icon="update" class="text-capitalize" type="submit" color="primary" :loading="loading"
                :label="$q.lang.label.update"

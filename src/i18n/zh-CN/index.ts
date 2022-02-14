@@ -15,5 +15,7 @@ export default {
   unauthorizedTips: "要查看此内容，请登录您的账号",
   unselectClientTips: "要查看此内容，请选择一个应用",
 
-  notFound: "这里空空如也……"
+  notFound: "这里空空如也……",
+
+  empty: "空空如也。"
 };

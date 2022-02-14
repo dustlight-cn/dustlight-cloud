@@ -23,6 +23,11 @@ const routes: RouteRecordRaw[] = [
     path: "/channels"
   },
   {
+    name: "channel",
+    component: () => import("./pages/Channel.vue"),
+    path: "/channels/:id"
+  },
+  {
     name: "messages",
     component: () => import("./pages/Messages.vue"),
     path: "/messages"

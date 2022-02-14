@@ -11,6 +11,7 @@
     "build": "quasar build"
   },
   "dependencies": {
+    "@dustlight/auth-client-axios-js": "^1.1.1-alpha",
     "@dustlight/datacenter-client-axios-js": "^0.0.6-alpha-2",
     "@dustlight/flow-client-axios-js": "0.1.8-alpha",
     "@dustlight/fun-client-axios-js": "0.0.3-alpha",
