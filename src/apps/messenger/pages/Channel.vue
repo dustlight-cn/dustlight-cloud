@@ -152,18 +152,15 @@ export default {
       this.channelsApi.getChannel(this.channelId, this.client_.cid)
         .then(res => {
           this.channel = res.data
-          let uids = []
+          let uids = new Set()
           if (this.channel.owner)
-            uids.push(...this.channel.owner)
+            this.channel.owner.forEach(uid => uids.add(uid))
           if (this.channel.member)
-            uids.push(...this.channel.member)
-          let myId = this.user_.uid
-          if (uids.indexOf(myId) > -1) {
-            uids.splice(uids.indexOf(myId), 1)
-          }
-          this.userMap[myId] = this.user_
-          if (uids.length > 0)
-            this.loadUsers(...uids)
+            this.channel.member.forEach(uid => uids.add(uid))
+          uids.delete(this.user_.uid)
+          this.userMap[this.user_.uid] = this.user_
+          if (uids.size > 0)
+            this.loadUsers(...Array.from(uids))
         })
         .catch(this.$throw)
         .finally(() => this.loading = false)
