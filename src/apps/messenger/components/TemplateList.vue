@@ -11,7 +11,7 @@
       </div>
     </div>
     <div v-if="loading">
-      <q-list separator>
+      <q-list bordered separator>
         <q-item v-for="i in size">
           <q-item-section avatar>
             <q-icon name="wysiwyg"/>
@@ -31,7 +31,7 @@
       </q-list>
     </div>
     <div v-else>
-      <q-list separator v-if="templates && templates.data" style="word-break: break-all">
+      <q-list bordered separator v-if="templates && templates.data" style="word-break: break-all">
         <q-item v-for="(template,index) in templates.data" :key="index" v-ripple clickable
                 @click="$emit('onSelect',template)"
                 :to="to?to(template):null">
@@ -74,15 +74,21 @@ export default {
   props: {
     token: Object,
     client: Object,
-    to: Function
+    to: Function,
+    size: {
+      type: Number,
+      default() {
+        return 10
+      }
+    },
+    pushRouteWithPage: Boolean
   },
   emits: ["onSelect"],
   data() {
     return {
       templates: null,
       loading: false,
-      page: this.$route.query.page || 1,
-      size: 10,
+      page: this.pushRouteWithPage ? (this.$route.query.page || 1) : 1,
       type: "EMAIL",
       key: ""
     }
@@ -114,15 +120,20 @@ export default {
       this.getTemplates()
     },
     page() {
-      let obj = this.cloneQuery()
-      obj.page = this.page
-      this.$router.push({
-        name: this.$route.name,
-        query: obj
-      })
+      if (this.pushRouteWithPage) {
+        let obj = this.cloneQuery()
+        obj.page = this.page
+        this.$router.push({
+          name: this.$route.name,
+          query: obj
+        })
+      } else {
+        this.getTemplates()
+      }
     },
     "$route.query.page"() {
-      this.getTemplates()
+      if (this.pushRouteWithPage)
+        this.getTemplates()
     }
   },
   methods: {

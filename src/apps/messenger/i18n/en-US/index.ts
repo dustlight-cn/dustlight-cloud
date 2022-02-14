@@ -4,9 +4,13 @@
 export default {
   title: "Message",
 
+  newTemplate: "New Template",
   templateName: "Template Name",
 
   notEmpty: "Can not be empty!",
+
+  deleteTemplateTitle: "Delete Template",
+  deleteTemplateMsg: "Are you sure to delete template \"{name}\"({id})?",
 
   menu: {
     "notifications": "Notification",

@@ -15,7 +15,7 @@ const routes: RouteRecordRaw[] = [
   {
     name: "template",
     component: () => import('./pages/Template.vue'),
-    path: "/template/:id"
+    path: "/templates/:id"
   },
   {
     name: "channels",

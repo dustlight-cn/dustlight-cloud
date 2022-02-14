@@ -11,8 +11,12 @@
     <q-form @submit="save" class="q-gutter-sm">
       <q-input :rules="rules" :loading="loading" filled :label="$appt('templateName')" v-model="template.name"/>
       <q-editor :toolbar="toolbarOptions" ref="editor" :disable="loading" v-model="template.content"/>
-      <div class="text-right">
-        <q-btn class="text-capitalize" type="submit" color="primary" :loading="loading" :label="$q.lang.label.update"
+      <div class="text-right q-gutter-sm">
+
+        <q-btn v-if="!loading" @click="deleteTemplate" icon="delete" color="negative" :loading="deleting"
+               :label="$q.lang.label.remove"/>
+        <q-btn icon="update" class="text-capitalize" type="submit" color="primary" :loading="loading"
+               :label="$q.lang.label.update"
                no-caps/>
       </div>
     </q-form>
@@ -30,6 +34,7 @@ export default {
       user_: null,
       token_: null,
       loading: false,
+      deleting: false,
       template: {
         name: "",
         content: ""
@@ -119,6 +124,34 @@ export default {
       }, this.type, this.client_.cid)
         .catch(this.$throw)
         .finally(() => this.loading = false)
+    },
+    deleteTemplate() {
+      if (this.deleting)
+        return
+      this.$q.dialog({
+        title: this.$appt('deleteTemplateTitle'),
+        message: this.$appt('deleteTemplateMsg', this.template),
+        cancel: {
+          color: "grey",
+          flat: true
+        },
+        ok: {
+          color: "negative"
+        }
+      })
+        .onOk(() => {
+          if (this.deleting)
+            return
+          this.deleting = true
+          this.templatesApi.deleteTemplate(this.templateId, this.type, this.client_.cid)
+            .then(res => {
+              this.$router.push({
+                name: this.$options.app + "/templates"
+              })
+            })
+            .catch(this.$throw)
+            .finally(() => this.deleting = false)
+        })
     }
   },
   mounted() {
