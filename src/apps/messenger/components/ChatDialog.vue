@@ -1,5 +1,5 @@
 <template>
-  <q-dialog style="max-width: 800px;max-height: 600px" ref="dialog">
+  <q-dialog ref="dialog">
     <q-card class="full-width full-height">
       <q-card-section>
         <q-item class="q-pa-none q-ma-none">
@@ -17,10 +17,11 @@
         </q-item>
       </q-card-section>
 
-      <q-separator />
+      <q-separator/>
 
-      <q-card-section style="height: calc(100% - 155px)" class="scroll">
-        <q-infinite-scroll class="full-height" @load="loadMore" reverse :offset="50">
+      <q-card-section ref="scroll" style="height: calc(100% - 155px)" class="scroll">
+
+        <q-infinite-scroll class="full-height" @load="loadMore" reverse :offset="50" :scroll-target="$refs.scroll">
           <template v-slot:loading="loading">
             <div class="row justify-center q-my-md">
               <q-spinner-dots color="primary" size="40px"/>
@@ -46,12 +47,13 @@
       <q-separator/>
 
       <q-card-section>
-        <q-input dense class="full-width" filled v-model="msg">
+        <q-input @keydown.enter="send" dense class="full-width" filled v-model="msg">
           <template v-slot:after>
 
-            <q-btn color="primary" label="send"/>
+            <q-btn @submit="send" type="submit" :loading="sending" color="primary" label="Send" no-caps/>
           </template>
         </q-input>
+        <!--        </q-form>-->
       </q-card-section>
     </q-card>
   </q-dialog>
@@ -66,14 +68,16 @@ export default {
     user: Object,
     target: Object,
     client: String,
-    messagesApi: MessagesApi
+    messagesApi: MessagesApi,
+    messageHook: Function
   },
   data() {
     return {
       msg: "",
       messages: [],
       promise: null,
-      size: 10
+      size: 10,
+      sending: false
     }
   },
   methods: {
@@ -94,7 +98,33 @@ export default {
     getShowName(user) {
       return user ? (user.nickname && user.nickname.trim() ? user.nickname : (user.username && user.username.trim() ? user.username.trim() : user.uid)) : user;
     },
+    pushMessage(...msg) {
+      let set = new Set
+      for (let i in this.messages) {
+        set.add(this.messages[i].id)
+      }
+      let msgs = []
+      msg.forEach(m => {
+        if (!set.has(m.id))
+          msgs.push(m)
+      })
+      this.messages.push(...msgs)
+
+      // this.$nextTick(() => this.$refs.scroll.scrollTop = this.$refs.scroll.scrollHeight)
+      // if (this.$refs.scroll.scrollTop >= this.$refs.scroll.scrollHeight - 50) {
+      // }
+    },
     loadMessage() {
+      if (this.messageHook) {
+        this.messageHook((msg) => {
+            if (msg &&
+              ((msg.receiver == this.user.uid && msg.sender == this.target.uid) ||
+                (msg.receiver == this.target.uid && msg.sender == this.user.uid))) {
+              this.pushMessage(msg)
+            }
+          }
+        )
+      }
       if (this.promise)
         return this.promise
       return this.promise = this.messagesApi.getChat(this.target.uid,
@@ -116,6 +146,21 @@ export default {
           done((data.length < this.size))
         })
         .catch(this.$throw)
+    },
+    send() {
+      if (this.sending || this.msg.length == 0)
+        return
+      this.sending = true
+      this.messagesApi.sendMessage({
+        receiver: this.target.uid,
+        content: this.msg,
+      }, undefined, this.client)
+        .then(res => {
+          this.pushMessage(...res.data)
+          this.msg = ""
+        })
+        .catch(this.$throw)
+        .finally(() => this.sending = false)
     }
   },
   mounted() {

@@ -35,6 +35,7 @@ export default boot(({app}) => {
       message: msg.title,
       caption: (msg.message ? msg.message + " " : "") + (msg.code > 0 ? "(Error Code: " + msg.code + ")" : "")
     })
+    return Promise.reject(e)
   }
   app.config.errorHandler = app.config.globalProperties.$throw
 });
