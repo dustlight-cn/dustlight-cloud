@@ -15,13 +15,13 @@
         <template v-slot:default>
           <q-list separator>
             <q-item v-for="(msg,index) in chatList.messages" :key="index" clickable v-ripple
-                    @click="()=> openChat(msg)">
+                    @click="()=> openChat(userMap[getMessageTarget(msg)])">
               <q-item-section avatar>
-                <auth-avatar :user="userMap[msg.sender]"/>
+                <auth-avatar :user="userMap[getMessageTarget(msg)]"/>
               </q-item-section>
               <q-item-section>
                 <q-item-label>
-                  {{ getShowName(userMap[msg.sender] || msg.sender) }}
+                  {{ getShowName(userMap[getMessageTarget(msg)] || getMessageTarget(msg)) }}
                 </q-item-label>
                 <q-item-label caption>
                   {{ msg.content }}
@@ -37,13 +37,16 @@
                 </q-icon>
               </q-item-section>
 
-              <q-badge color="red" floating rounded v-if="!msg.readAt"/>
+              <!--              <q-badge color="red" floating rounded v-if="!msg.readAt"/>-->
             </q-item>
           </q-list>
         </template>
       </q-infinite-scroll>
       <q-separator/>
     </q-card-section>
+    <q-page-sticky :offset="[18,18]">
+      <q-btn @click="newChat" color="primary" round icon="add"/>
+    </q-page-sticky>
   </client-required-adaptive-layout>
 </template>
 
@@ -51,6 +54,7 @@
 import ClientRequiredAdaptiveLayout from "../../../components/container/ClientRequiredAdaptiveLayout";
 // import MessageStore from "../MessageStore";
 import ChatDialog from "../components/ChatDialog";
+import UserSelector from "../../../components/dialog/UserSelector";
 
 export default {
   name: "Messages",
@@ -104,6 +108,11 @@ export default {
     }
   },
   methods: {
+    getMessageTarget(msg) {
+      if (msg.sender == this.user_.uid)
+        return msg.receiver
+      return msg.sender
+    },
     getShowName(user) {
       return user ? (user.nickname && user.nickname.trim() ? user.nickname : (user.username && user.username.trim() ? user.username.trim() : user.uid)) : user;
     },
@@ -156,19 +165,26 @@ export default {
     },
     onMessage(msg) {
       let data = JSON.parse(msg.data)
-      let index = -1
-      for (let i in this.chatList.messages) {
-        if (this.chatList.messages[i].sender == data.sender) {
-          index = i;
-          break
-        }
-      }
-      if (index > -1)
-        this.chatList.messages.splice(index, 1)
-      this.chatList.messages.splice(0, 0, data)
-      console.log(this.chatList.messages)
+      this.updateCharList(data)
       if (this.messageHook)
         this.messageHook(data)
+    },
+    updateCharList(...msgs) {
+      msgs.forEach(msg => {
+        let index = -1
+        for (let i in this.chatList.messages) {
+          if ((this.chatList.messages[i].sender == msg.sender &&
+              this.chatList.messages[i].receiver == msg.receiver) ||
+            (this.chatList.messages[i].sender == msg.receiver &&
+              this.chatList.messages[i].receiver == msg.sender)) {
+            index = i;
+            break
+          }
+        }
+        if (index > -1)
+          this.chatList.messages.splice(index, 1)
+        this.chatList.messages.splice(0, 0, msg)
+      })
     },
     connect() {
       this.closeWebSocket()
@@ -201,7 +217,7 @@ export default {
           this.chatList.messages.push(...res.data)
           let uids = []
           res.data.forEach(msg => {
-            uids.push(msg.sender)
+            uids.push(msg.sender, msg.receiver)
           })
           this.loadUsers(...uids)
           return res.data
@@ -217,20 +233,35 @@ export default {
         .catch(this.$throw)
     },
     openChat(target) {
+      if (target == null)
+        return
       let chatBox = this.$q.dialog({
         component: ChatDialog,
         parent: this,
         componentProps: {
           user: this.user_,
-          target: this.userMap[target.sender],
+          target: target,
           client: this.client_.cid,
           messagesApi: this.messagesApi,
           messageHook: (fn) => {
             this.messageHook = fn
-          }
+          },
+          onSend: this.updateCharList
         }
       })
         .onDismiss(() => this.messageHook = null)
+    },
+    newChat() {
+      this.$q.dialog({
+        component: UserSelector,
+        componentProps: {
+          token: this.token_.access_token
+        }
+      })
+        .onOk(user => {
+          this.userMap[user.uid] = user
+          this.openChat(user)
+        })
     }
   },
   mounted() {

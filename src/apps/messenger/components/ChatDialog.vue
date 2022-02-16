@@ -84,7 +84,8 @@ export default {
     target: Object,
     client: String,
     messagesApi: MessagesApi,
-    messageHook: Function
+    messageHook: Function,
+    onSend: Function
   },
   data() {
     return {
@@ -174,6 +175,8 @@ export default {
         .then(res => {
           this.pushMessage(...res.data)
           this.msg = ""
+          if (this.onSend)
+            this.onSend(...res.data)
         })
         .catch(this.$throw)
         .finally(() => this.sending = false)

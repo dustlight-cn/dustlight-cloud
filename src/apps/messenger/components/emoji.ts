@@ -10,6 +10,4 @@ if (emoji.length == 0)
     emoji.push(...emojis)
   })
 
-
-console.log(emoji)
 export default emoji
