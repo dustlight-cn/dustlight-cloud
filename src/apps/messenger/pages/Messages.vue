@@ -5,30 +5,30 @@
     {{ "", client_ = client, user_ = user, token_ = token }}
 
     <q-card-section style="height: calc(100% - 200px)" class="scroll">
-      <q-separator/>
-      <q-infinite-scroll class="full-height" @load="loadMore" :offset="50">
+
+      <q-infinite-scroll ref="scroll" class="full-height" @load="loadMore" :offset="50">
         <template v-slot:loading>
           <div class="row justify-center q-my-md">
             <q-spinner-dots color="primary" size="40px"/>
           </div>
         </template>
         <template v-slot:default>
-          <q-list separator>
+          <q-list style="text-overflow: ellipsis" separator>
             <q-item v-for="(msg,index) in chatList.messages" :key="index" clickable v-ripple
                     @click="()=> openChat(userMap[getMessageTarget(msg)])">
               <q-item-section avatar>
                 <auth-avatar :user="userMap[getMessageTarget(msg)]"/>
               </q-item-section>
               <q-item-section>
-                <q-item-label>
+                <q-item-label lines="1">
                   {{ getShowName(userMap[getMessageTarget(msg)] || getMessageTarget(msg)) }}
                 </q-item-label>
-                <q-item-label caption>
+                <q-item-label lines="2" caption>
                   {{ msg.content }}
                 </q-item-label>
               </q-item-section>
               <q-item-section side>
-                <q-item-label>
+                <q-item-label lines="1">
                   {{ $moment(msg.createdAt) }}
                 </q-item-label>
               </q-item-section>
@@ -42,7 +42,7 @@
           </q-list>
         </template>
       </q-infinite-scroll>
-      <q-separator/>
+      <no-results v-if="!chatList.promise && chatList.messages.length == 0"/>
     </q-card-section>
     <q-page-sticky :offset="[18,18]">
       <q-btn @click="newChat" color="primary" round icon="add"/>
@@ -55,10 +55,11 @@ import ClientRequiredAdaptiveLayout from "../../../components/container/ClientRe
 // import MessageStore from "../MessageStore";
 import ChatDialog from "../components/ChatDialog";
 import UserSelector from "../../../components/dialog/UserSelector";
+import NoResults from "../../../components/common/NoResults";
 
 export default {
   name: "Messages",
-  components: {ClientRequiredAdaptiveLayout},
+  components: {NoResults, ClientRequiredAdaptiveLayout},
   data() {
     return {
       client_: null,
@@ -80,15 +81,22 @@ export default {
     token_() {
       // this.parseStore()
       // this.loadChatList()
+      this.chatList.messages = []
+      this.$refs.scroll.resume()
       this.connect()
     },
     client_() {
       // this.parseStore()
       // this.loadChatList()
+      this.chatList.messages = []
+      this.$refs.scroll.resume()
       this.connect()
     },
     user_() {
       // this.parseStore()
+      this.chatList.messages = []
+      this.$refs.scroll.resume()
+      this.connect()
     }
   },
   computed: {
@@ -135,6 +143,13 @@ export default {
         })
         .catch(this.$throw)
     },
+    loadMessageUser(...msgs) {
+      let uids = []
+      msgs.forEach(msg => {
+        uids.push(msg.sender, msg.receiver)
+      })
+      this.loadUsers(...uids)
+    },
     // parseStore() {
     //   if (this.messageStore != null)
     //     this.messageStore.close()
@@ -165,6 +180,7 @@ export default {
     },
     onMessage(msg) {
       let data = JSON.parse(msg.data)
+      this.loadMessageUser(data)
       this.updateCharList(data)
       if (this.messageHook)
         this.messageHook(data)
@@ -215,11 +231,7 @@ export default {
         this.client_.cid)
         .then(res => {
           this.chatList.messages.push(...res.data)
-          let uids = []
-          res.data.forEach(msg => {
-            uids.push(msg.sender, msg.receiver)
-          })
-          this.loadUsers(...uids)
+          this.loadMessageUser(...res.data)
           return res.data
         })
         .catch(this.$throw)
@@ -246,7 +258,8 @@ export default {
           messageHook: (fn) => {
             this.messageHook = fn
           },
-          onSend: this.updateCharList
+          onSend: this.updateCharList,
+          sendLabel: this.$appt('send')
         }
       })
         .onDismiss(() => this.messageHook = null)

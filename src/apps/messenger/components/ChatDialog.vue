@@ -19,9 +19,10 @@
 
       <q-separator/>
 
-      <q-card-section ref="scroll" style="height: calc(100% - 155px)" class="scroll">
+      <q-card-section ref="scrollTarget" style="height: calc(100% - 155px)" class="scroll">
 
-        <q-infinite-scroll class="full-height" @load="loadMore" reverse :offset="50" :scroll-target="$refs.scroll">
+        <q-infinite-scroll ref="scroll" class="full-height" @load="loadMore" reverse :offset="100"
+                           :scroll-target="$refs.scrollTarget">
           <template v-slot:loading="loading">
             <div class="row justify-center q-my-md">
               <q-spinner-dots color="primary" size="40px"/>
@@ -64,7 +65,7 @@
               </q-btn>
             </template>
             <template v-slot:after>
-              <q-btn @click="send" type="submit" :loading="sending" color="primary" label="Send" no-caps/>
+              <q-btn @click="send" type="submit" :loading="sending" color="primary" :label="sendLabel" no-caps/>
             </template>
           </q-input>
         </q-form>
@@ -79,13 +80,20 @@ import emoji from './emoji'
 
 export default {
   name: "ChatDialog",
+  components: {},
   props: {
     user: Object,
     target: Object,
     client: String,
     messagesApi: MessagesApi,
     messageHook: Function,
-    onSend: Function
+    onSend: Function,
+    sendLabel: {
+      type: String,
+      default() {
+        return "Send"
+      }
+    }
   },
   data() {
     return {
@@ -125,11 +133,14 @@ export default {
         if (!set.has(m.id))
           msgs.push(m)
       })
-      this.messages.push(...msgs)
-
-      // this.$nextTick(() => this.$refs.scroll.scrollTop = this.$refs.scroll.scrollHeight)
-      // if (this.$refs.scroll.scrollTop >= this.$refs.scroll.scrollHeight - 50) {
-      // }
+      if (msgs.length > 0) {
+        this.messages.push(...msgs)
+        this.$nextTick(() => {
+          let d = ((this.$refs.scrollTarget.$el.scrollHeight - this.$refs.scrollTarget.$el.offsetHeight) - this.$refs.scrollTarget.$el.scrollTop)
+          if (d < 100)
+            this.$refs.scrollTarget.$el.scrollTop = this.$refs.scrollTarget.$el.scrollHeight
+        })
+      }
     },
     loadMessage() {
       if (this.messageHook) {
