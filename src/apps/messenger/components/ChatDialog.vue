@@ -47,13 +47,27 @@
       <q-separator/>
 
       <q-card-section>
-        <q-input @keydown.enter="send" dense class="full-width" filled v-model="msg">
-          <template v-slot:after>
-
-            <q-btn @submit="send" type="submit" :loading="sending" color="primary" label="Send" no-caps/>
-          </template>
-        </q-input>
-        <!--        </q-form>-->
+        <q-form @submit="send">
+          <q-input @keydown.enter="send" dense class="full-width" filled v-model="msg">
+            <template v-slot:before>
+              <q-btn color="primary"  dense flat round>
+                <span style="font-size: 1.5em">😀</span>
+                <q-menu style="width: calc(50%)">
+                  <q-card>
+                    <q-card-section class="scroll-x">
+                      <q-btn @click="()=>msg += em" v-for="em in emoji" :key="em" flat round dense>
+                        <span style="font-size: 1.5em">{{ em }}</span>
+                      </q-btn>
+                    </q-card-section>
+                  </q-card>
+                </q-menu>
+              </q-btn>
+            </template>
+            <template v-slot:after>
+              <q-btn @click="send" type="submit" :loading="sending" color="primary" label="Send" no-caps/>
+            </template>
+          </q-input>
+        </q-form>
       </q-card-section>
     </q-card>
   </q-dialog>
@@ -61,6 +75,7 @@
 
 <script>
 import {MessagesApi} from "@dustlight/messenger-client-axios-js";
+import emoji from './emoji'
 
 export default {
   name: "ChatDialog",
@@ -77,7 +92,8 @@ export default {
       messages: [],
       promise: null,
       size: 10,
-      sending: false
+      sending: false,
+      emoji: emoji
     }
   },
   methods: {
