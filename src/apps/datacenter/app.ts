@@ -4,23 +4,23 @@ import routes from "./routes"
 import ext from "./ext"
 
 const app: App = {
-  name: "test",
+  name: "datacenter",
   routes: routes,
   i18n: i18n,
   enabled: true,
   ext: ext,
   menus: [
     {
-      name: "index",
-      routeName: "index",
-      i18nKey: "menu.index",
-      icon: "home"
+      name: "forms",
+      routeName: "forms",
+      i18nKey: "menu.forms",
+      icon: "list_alt"
     },
     {
-      name: "test",
-      routeName: "test",
-      i18nKey: "menu.test",
-      icon: "apps"
+      name: "records",
+      routeName: "records",
+      i18nKey: "menu.records",
+      icon: "feed"
     }
   ]
 }
