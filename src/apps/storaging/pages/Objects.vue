@@ -4,7 +4,17 @@
     v-slot="{client,user,token}">
     {{ "", client_ = client, user_ = user, token_ = token }}
 
-    <q-list separator v-if="loading">
+    <div class="q-mb-md">
+      <q-input dense style="max-width: 600px;margin: 0 auto"
+               :loading="loading"
+               filled v-model="key" :debounce="500" :placeholder="$q.lang.label.search" clearable>
+        <template v-slot:prepend>
+          <q-icon name="search"/>
+        </template>
+      </q-input>
+    </div>
+
+    <q-list bordered separator v-if="loading">
       <q-item v-for="i in size" :key="i">
         <q-item-section avatar>
           <q-icon name="text_snippet"/>
@@ -19,7 +29,7 @@
         </q-item-section>
       </q-item>
     </q-list>
-    <q-list style="text-overflow: ellipsis" separator v-else-if="objects && objects.data.length > 0">
+    <q-list bordered style="text-overflow: ellipsis" separator v-else-if="objects && objects.data.length > 0">
       <q-item v-for="(obj,index) in objects.data" :key="obj" clickable v-ripple
               :to="{name: $options.app + '/object',params:{id:obj.id }}">
         <q-item-section avatar>
@@ -52,6 +62,15 @@
       </q-item>
     </q-list>
     <no-results v-else/>
+
+    <div v-if="objects && objects.count > size " class="flex flex-center">
+      <q-pagination
+        v-model="page"
+        :max="Math.ceil(objects.count/size)"
+        input
+        color="primary"
+      />
+    </div>
 
     <q-page-sticky :offset="[18,18]">
       <q-btn :loading="creating" @click="newObject" color="primary" round icon="add"/>
@@ -97,19 +116,47 @@ export default {
   },
   watch: {
     token_() {
-      this.page = this.$route.query.page || 1
       this.loadObjects()
     },
     client_() {
-      this.page = this.$route.query.page || 1
       this.loadObjects()
     },
     user_() {
+      this.loadObjects()
+    },
+    page() {
+      let obj = this.cloneQuery()
+      obj.page = this.page
+      this.$router.push({name: this.$route.name, query: obj})
+    },
+    key() {
+      let obj = this.cloneQuery()
+      obj.key = this.key
+      obj.page = 1
+      this.$router.push({name: this.$route.name, query: obj})
+    },
+    "$route.query.page"() {
+      if (this.$route.name != this.$options.app + "/objects")
+        return
       this.page = this.$route.query.page || 1
+      this.key = this.$route.query.key || ""
+      this.loadObjects()
+    },
+    "$route.query.key"() {
+      if (this.$route.name != this.$options.app + "/objects")
+        return
+      this.page = this.$route.query.page || 1
+      this.key = this.$route.query.key || ""
       this.loadObjects()
     }
   },
   methods: {
+    cloneQuery() {
+      let obj = {}
+      for (let i in this.$route.query)
+        obj[i] = this.$route.query[i]
+      return obj;
+    },
     loadObjects() {
       if (this.loading)
         return
