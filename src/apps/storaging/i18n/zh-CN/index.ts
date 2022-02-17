@@ -16,6 +16,9 @@ export default {
   objectCanWrite: "可写者",
   upload: "上传",
   download: "下载",
+  delete: "删除",
+  deleteTitle: "删除对象",
+  deleteMessage: "是否确定要删除对象 ’{id}‘？",
 
   notEmpty: "不可为空！",
 

@@ -16,6 +16,9 @@ export default {
   objectCanWrite: "Write Access",
   upload: "Upload",
   download: "Download",
+  delete: "Delete",
+  deleteTitle: "Delete Object",
+  deleteMessage: "Are you sure to delete object '{id}'?",
 
   notEmpty: "Can not be empty!",
 

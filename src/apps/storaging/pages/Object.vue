@@ -113,9 +113,14 @@
         </q-item-section>
       </q-item>
       <div class="text-right q-gutter-sm">
-        <q-btn flat :loading="uploading || loading" color="accent" icon="upload" :label="$appt('upload')" @click="upload"/>
-        <q-btn flat :loading="downloading || loading" color="secondary" icon="download" :label="$appt('download')" @click="download"/>
-        <q-btn :loading="loading" color="primary" icon="update" :label="$q.lang.label.update" type="submit"/>
+        <q-btn flat :loading="deleting || loading" color="negative" icon="delete" :label="$appt('delete')"
+               @click="deleteObject"/>
+        <q-btn flat :disable="deleting" :loading="uploading || loading" color="accent" icon="upload"
+               :label="$appt('upload')" @click="upload"/>
+        <q-btn flat :disable="deleting" :loading="downloading || loading" color="secondary" icon="download"
+               :label="$appt('download')" @click="download"/>
+        <q-btn :disable="deleting" :loading="loading" color="primary" icon="update" :label="$q.lang.label.update"
+               type="submit"/>
       </div>
     </q-form>
   </client-required-adaptive-layout>
@@ -148,7 +153,8 @@ export default {
       userMap: {},
       rule: [val => val && val.trim().length > 0 || this.$appt('notEmpty')],
       uploading: false,
-      downloading: false
+      downloading: false,
+      deleting: false
     }
   },
   computed: {
@@ -350,6 +356,35 @@ export default {
           this.downloading = false
           d.hide()
         })
+    },
+    deleteObject() {
+      if (this.deleting)
+        return
+      this.$q.dialog({
+        title: this.$appt("deleteTitle"),
+        message: this.$appt("deleteMessage", this.object),
+        cancel: {
+          color: 'grey',
+          flat: true
+        },
+        ok: {
+          label: this.$appt('delete'),
+          color: 'negative',
+          flat: true
+        }
+      }).onOk(() => {
+        if (this.deleting)
+          return
+        this.deleting = true
+        this.objectsApi.deleteObject(this.objectId, this.client_.cid, true)
+          .then(res => {
+            this.$router.push({
+              name: this.$options.app + '/objects'
+            })
+          })
+          .catch(this.$throw)
+          .finally(() => this.deleting = false)
+      })
     }
   },
   mounted() {
