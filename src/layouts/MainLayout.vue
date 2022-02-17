@@ -7,6 +7,7 @@
                         :label="$q.screen.lt.md && isAppPage?$t(currentApp.name + '.title'):$t('services')">
           <q-list>
             <q-item v-for="(app,index) in apps" :key="index" clickable v-close-popup
+                    :class="currentApp && currentApp.name == app.name ? 'text-primary':''"
                     :to="app.menus && app.menus.length > 0 ? {name: app.name + '/' + app.menus[0].routeName} : {path: '/' + app.name }">
               <q-item-section>
                 <q-item-label>{{ $t(app.name + ".title") }}</q-item-label>
