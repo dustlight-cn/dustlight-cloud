@@ -113,9 +113,9 @@
         </q-item-section>
       </q-item>
       <div class="text-right q-gutter-sm">
-        <q-btn flat :loading="uploading" color="accent" icon="upload" :label="$appt('upload')" @click="upload"/>
-        <q-btn flat color="secondary" icon="download" :label="$appt('download')" @click="download"/>
-        <q-btn color="primary" icon="update" :label="$q.lang.label.update" type="submit"/>
+        <q-btn flat :loading="uploading || loading" color="accent" icon="upload" :label="$appt('upload')" @click="upload"/>
+        <q-btn flat :loading="downloading || loading" color="secondary" icon="download" :label="$appt('download')" @click="download"/>
+        <q-btn :loading="loading" color="primary" icon="update" :label="$q.lang.label.update" type="submit"/>
       </div>
     </q-form>
   </client-required-adaptive-layout>

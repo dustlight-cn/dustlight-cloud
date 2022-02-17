@@ -4,6 +4,8 @@
 export default {
   title: "存储服务",
 
+  newObject: "新建对象",
+
   objectId: "ID",
   objectName: "名称",
   objectDescription: "描述",

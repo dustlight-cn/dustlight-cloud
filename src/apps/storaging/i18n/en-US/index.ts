@@ -4,6 +4,8 @@
 export default {
   title: "Storage",
 
+  newObject: "New Object",
+
   objectId: "ID",
   objectName: "Name",
   objectDescription: "Description",

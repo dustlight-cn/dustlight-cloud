@@ -122,7 +122,37 @@ export default {
         .finally(() => this.loading = false)
     },
     newObject() {
-
+      if (this.creating)
+        return
+      this.$q.dialog({
+        title: this.$appt('newObject'),
+        prompt: {
+          label: this.$appt('objectName'),
+          model: "",
+          isValid: val => val && val.trim().length > 0
+        },
+        cancel: {
+          color: 'grey',
+          flat: true
+        }
+      })
+        .onOk(name => {
+          if (this.creating)
+            return
+          this.creating = true
+          this.objectsApi.createObject({
+            name: name.trim(),
+            description: ""
+          }, this.client_.cid)
+            .then(res => this.$router.push({
+              name: this.$options.app + '/object',
+              params: {
+                id: res.data.id
+              }
+            }))
+            .catch(this.$throw)
+            .finally(() => this.creating = false)
+        })
     }
   },
   mounted() {
