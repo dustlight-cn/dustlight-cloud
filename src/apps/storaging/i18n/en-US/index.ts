@@ -20,9 +20,14 @@ export default {
   deleteTitle: "Delete Object",
   deleteMessage: "Are you sure to delete object '{id}'?",
 
+  key: "Key",
+  system: "System",
+  save: "Save",
+  format: "Format",
+
   notEmpty: "Can not be empty!",
 
-  menu:{
+  menu: {
     "objects": "Object",
     "configs": "Config"
   }

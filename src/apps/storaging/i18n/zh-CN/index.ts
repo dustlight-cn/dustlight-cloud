@@ -20,6 +20,11 @@ export default {
   deleteTitle: "删除对象",
   deleteMessage: "是否确定要删除对象 ’{id}‘？",
 
+  key:"键名",
+  system:"系统",
+  save:"保存",
+  format:"格式化",
+
   notEmpty: "不可为空！",
 
   menu: {
