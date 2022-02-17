@@ -20,7 +20,8 @@
       </q-item>
     </q-list>
     <q-list style="text-overflow: ellipsis" separator v-else-if="objects && objects.data.length > 0">
-      <q-item v-for="(obj,index) in objects.data" :key="obj" clickable v-ripple>
+      <q-item v-for="(obj,index) in objects.data" :key="obj" clickable v-ripple
+              :to="{name: $options.app + '/object',params:{id:obj.id }}">
         <q-item-section avatar>
           <q-icon name="text_snippet"/>
         </q-item-section>
@@ -59,13 +60,12 @@
 </template>
 
 <script>
-import ChannelList from "../../messenger/components/ChannelList";
 import ClientRequiredAdaptiveLayout from "../../../components/container/ClientRequiredAdaptiveLayout";
 import NoResults from "../../../components/common/NoResults";
 
 export default {
   name: "Objects",
-  components: {NoResults, ChannelList, ClientRequiredAdaptiveLayout},
+  components: {NoResults, ClientRequiredAdaptiveLayout},
   data() {
     return {
       client_: null,

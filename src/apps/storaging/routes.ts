@@ -7,6 +7,11 @@ const routes: RouteRecordRaw[] = [
     path: "/objects"
   },
   {
+    name: "object",
+    component: () => import("./pages/Object.vue"),
+    path: "/objects/:id"
+  },
+  {
     name: "configs",
     component: () => import("./pages/Configs.vue"),
     path: "/configs"
