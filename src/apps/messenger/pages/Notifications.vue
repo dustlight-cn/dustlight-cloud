@@ -44,6 +44,13 @@
                 {{ notification.sender }}
               </div>
             </q-item-label>
+
+            <q-item-label v-else>
+              <q-chip dense color="primary" text-color="white">
+                <auth-client-logo size="22" :client="client"/>
+                {{ client.name && client.name.trim() ? client.name.trim() : "System" }}
+              </q-chip>
+            </q-item-label>
             <q-item-label caption>
               <q-icon name="event"/>
               {{ $moment(notification.createdAt) }}
@@ -219,7 +226,17 @@ export default {
       })
     },
     loadUsers(...uid) {
-      this.usersApi.getUsers(uid)
+      if (!this.userMap[this.user_.uid])
+        this.userMap[this.user_.uid] = this.user_
+      let set = new Set
+      uid.forEach(u => set.add(u))
+      for (let id in this.userMap) {
+        set.delete(id)
+      }
+      set.delete(null)
+      if (set.size == 0)
+        return
+      this.usersApi.getUsers(Array.from(set))
         .then(res => {
           for (let i in res.data.data) {
             let u = res.data.data[i]
