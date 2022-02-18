@@ -5,10 +5,13 @@
         <q-icon name="edit"/>
         {{ varName }}
       </q-card-section>
-      <q-card-section>
-        <q-input :disable="saving" type="textarea" v-model="model" filled/>
+      <q-card-section class="scroll">
+        <q-input :readonly="readonly" :rules="rule" :disable="saving" type="textarea" v-model="model" filled/>
       </q-card-section>
-      <q-card-actions align="right">
+      <q-card-actions v-if="readonly" align="right">
+        <q-btn color="primary" :label="$q.lang.label.ok" v-close-popup/>
+      </q-card-actions>
+      <q-card-actions v-else align="right">
         <q-btn :disable="saving" flat :label="$q.lang.label.cancel" @click="onCancelClick"/>
         <q-btn :loading="saving" color="primary" :label="$q.lang.label.set" @click="onSave"/>
       </q-card-actions>
@@ -37,12 +40,23 @@ export default {
       default() {
         return null
       }
-    }
+    },
+    readonly: Boolean
   },
   data() {
     return {
       model: "",
-      saving: false
+      saving: false,
+      rule: [
+        val => {
+          try {
+            JSON.parse(val)
+          } catch (e) {
+            return e.message || e
+          }
+          return true
+        }
+      ]
     }
   },
   methods: {

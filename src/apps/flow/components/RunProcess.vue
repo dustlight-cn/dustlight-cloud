@@ -26,7 +26,7 @@
                 <q-input :rules="rules" :label="nameLabel" dense filled v-model="model.key"/>
               </q-item-section>
               <q-item-section>
-                <q-input :rules="rules" :label="valueLabel" dense filled v-model="model.value"/>
+                <q-input :rules="valRules" :label="valueLabel" dense filled v-model="model.value"/>
               </q-item-section>
               <q-item-section side>
                 <q-btn type="submit" dense flat round icon="add"/>
@@ -67,6 +67,14 @@ export default {
         key: "",
         value: ""
       },
+      valRules: [val => {
+        try {
+          JSON.parse(val)
+        } catch (e) {
+          return e.message || e
+        }
+        return true
+      }],
       creating: false
     }
   },

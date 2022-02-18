@@ -82,20 +82,22 @@
                     <div class="text-center" v-if="variableLoading.indexOf(event.elementId) > -1">
                       <q-spinner-gears color="primary" size="4em"/>
                     </div>
-                    <q-list separator v-else="variablesMap[event.elementId]">
+                    <q-list style="text-overflow: ellipsis" separator v-else="variablesMap[event.elementId]">
                       <q-item @click="() => setVariable(variable,event,index)" clickable v-ripple
                               v-for="(variable,index) in variablesMap[event.elementId]" :key="index">
                         <q-item-section>
                           <q-item-label overline style="word-break: break-all">{{ index }}</q-item-label>
                         </q-item-section>
                         <q-item-section>
-                          <q-item-label caption style="word-break: break-all">
+                          <q-item-label lines="1" caption>
                             {{ variable }}
                           </q-item-label>
                         </q-item-section>
                       </q-item>
-                      <q-separator/>
-                      <q-form @submit="()=> addVariable(event)">
+                      <q-separator v-if="hasField(variablesMap[event.elementId])"/>
+                      <no-results v-else/>
+                      <q-form v-if="instance.status != 'COMPLETED' && instance.status != 'CANCELED'"
+                              @submit="()=> addVariable(event)">
                         <q-item>
                           <q-item-section>
                             <q-input :rules="notEmpty" hide-hint hide-bottom-space dense
@@ -103,7 +105,7 @@
                                      :label="$appt('variableName')" filled v-model="newVariables.key"/>
                           </q-item-section>
                           <q-item-section>
-                            <q-input :rules="notEmpty" hide-hint hide-bottom-space dense
+                            <q-input :rules="jsonRule" hide-hint hide-bottom-space dense
                                      :disable="variableAdding.indexOf(event.elementId) > -1"
                                      :label="$appt('variableValue')" filled v-model="newVariables.value"/>
                           </q-item-section>
@@ -138,10 +140,11 @@
 import ClientRequiredAdaptiveLayout from "src/components/container/ClientRequiredAdaptiveLayout";
 import Bpm from "../components/Bpm";
 import EditVariable from "../components/EditVariable";
+import NoResults from "../../../components/common/NoResults";
 
 export default {
   name: "Instance",
-  components: {Bpm, ClientRequiredAdaptiveLayout},
+  components: {NoResults, Bpm, ClientRequiredAdaptiveLayout},
   data() {
     return {
       user_: null,
@@ -157,7 +160,17 @@ export default {
       resolving: false,
       variableAdding: [],
       elementNames: {},
-      notEmpty: [val => val != null && val.trim().length > 0 || this.$appt('notEmpty')]
+      notEmpty: [val => val != null && val.trim().length > 0 || this.$appt('notEmpty')],
+      jsonRule: [
+        val => {
+          try {
+            JSON.parse(val)
+          } catch (e) {
+            return e.message || e
+          }
+          return true
+        }
+      ]
     }
   },
   computed: {
@@ -205,6 +218,13 @@ export default {
     }
   },
   methods: {
+    hasField(obj) {
+      if (!obj)
+        return false
+      for (let k in obj)
+        return true
+      return false
+    },
     loadInstance() {
       if (this.loading)
         return
@@ -227,7 +247,17 @@ export default {
         return
       this.variableLoading.push(event.elementId)
       this.instancesAPi.getInstanceVariables(this.instance.id, event.id, this.client_.cid)
-        .then(res => this.variablesMap[event.elementId] = res.data)
+        .then(res => {
+          let m = res.data
+          for (let key in m) {
+            try {
+              m[key] = JSON.stringify(JSON.parse(m[key]), null, "  ")
+            } catch (e) {
+
+            }
+          }
+          this.variablesMap[event.elementId] = m
+        })
         .catch(this.$throw)
         .finally(() => this.variableLoading.splice(this.variableLoading.indexOf(event.elementId), 1))
     },
@@ -264,9 +294,9 @@ export default {
         componentProps: {
           varName: key,
           varVal: value,
-          api: (val) => this.instancesAPi.setInstanceVariables(this.instance.id, event.id, buildMap(val), this.client_.cid)
+          api: (val) => this.instancesAPi.setInstanceVariables(this.instance.id, event.id, buildMap(val), this.client_.cid),
+          readonly: this.instance.status == 'COMPLETED' || this.instance.status == 'CANCELED'
         }
-        // ...更多属性...
       })
         .onOk(val => {
           this.variablesMap[event.elementId][key] = val

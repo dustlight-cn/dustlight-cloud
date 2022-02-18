@@ -26,7 +26,8 @@
     </q-list>
     <div v-else>
       <q-list bordered separator v-if="instances && instances.data && instances.data.length > 0">
-        <q-item style="word-break: break-all" v-for="(instance,index) in instances.data" :key="index"
+        <q-item style="word-break: break-all;text-overflow: ellipsis" v-for="(instance,index) in instances.data"
+                :key="index"
                 clickable
                 :to="{name:$options.app + '/instance',params:{id:instance.id}}"
                 v-ripple>
@@ -42,13 +43,13 @@
               {{ instance.name }}
               <q-badge>v{{ instance.version }}</q-badge>
             </q-item-label>
-            <q-item-label caption>
+            <q-item-label caption lines="1">
               {{ $moment(instance.createdAt) }}
             </q-item-label>
           </q-item-section>
           <q-item-section v-if="instance.status == 'INCIDENT'">
-            <q-item-label overline>{{ instance.error.type }}</q-item-label>
-            <q-item-label caption>{{ instance.error.message }}</q-item-label>
+            <q-item-label overline lines="1">{{ instance.error.type }}</q-item-label>
+            <q-item-label caption lines="1">{{ instance.error.message }}</q-item-label>
           </q-item-section>
           <q-item-section side>
             <q-icon name="keyboard_arrow_right"/>
