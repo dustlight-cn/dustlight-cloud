@@ -4,6 +4,14 @@
     v-slot="{client,user,token}">
     {{ "", client_ = client, user_ = user, token_ = token }}
 
+    <div v-if="processName || processVersion" class="q-mb-sm text-center">
+      <q-chip v-if="processName" icon="account_tree" :label="processName" removable
+              @remove="()=>this.processName = ''"/>
+
+      <q-chip v-if="processVersion" :label="'v'+processVersion" removable
+              @remove="()=>this.processVersion = ''"/>
+    </div>
+
     <q-list bordered separator v-if="loading">
       <q-item v-for="index in pageSize" :key="index">
         <q-item-section avatar>
@@ -89,7 +97,10 @@ export default {
       loading: false,
       instances: null,
       pageSize: 10,
-      page: 1
+      page: this.$route.query.page || 1,
+      processName: this.$route.query.name,
+      processVersion: this.$route.query.version,
+
     }
   },
   watch: {
@@ -102,14 +113,53 @@ export default {
       this.loadInstances()
     },
     page() {
+      let q = this.cloneQuery()
+      q.page = this.page
+      this.$router.push({
+        name: this.$route.name,
+        query: q
+      })
+    },
+    processName() {
+      let q = this.cloneQuery()
+      q.page = 1
+      if (this.processName)
+        q.name = this.processName
+      else
+        delete q.name
+      this.$router.push({
+        name: this.$route.name,
+        query: q
+      })
+    },
+    processVersion() {
+      let q = this.cloneQuery()
+      q.page = 1
+      if (this.processVersion)
+        q.version = this.processVersion
+      else
+        delete q.version
+      this.$router.push({
+        name: this.$route.name,
+        query: q
+      })
+    },
+    "$route.query.name"() {
+      this.processName = this.$route.query.name
+      this.processVersion = this.$route.query.version
+      this.page = this.$route.query.page || 1
       this.loadInstances()
     },
-    "$route.query.name"(){
-      this.page = 1
+    "$route.query.version"() {
+      this.processName = this.$route.query.name
+      this.processVersion = this.$route.query.version
+      this.page = this.$route.query.page || 1
       this.loadInstances()
     },
-    "$route.query.version"(){
-      this.page = 1
+    "$route.query.page"() {
+      this.processName = this.$route.query.name
+      this.processVersion = this.$route.query.version
+      this.page = this.$route.query.page || 1
       this.loadInstances()
     }
   },
@@ -119,13 +169,19 @@ export default {
     }
   },
   methods: {
+    cloneQuery() {
+      let obj = {}
+      for (let i in this.$route.query)
+        obj[i] = this.$route.query[i]
+      return obj;
+    },
     getStatusColor(status) {
       return this.$options.ext.getStatusColor(status)
     },
     loadInstances() {
       if (!this.loading) {
         this.loading = true
-        this.instancesApi.getInstances(this.$route.query.name, this.$route.query.version, undefined, this.page - 1, this.pageSize, this.client_.cid)
+        this.instancesApi.getInstances(this.processName, this.processVersion, undefined, this.page - 1, this.pageSize, this.client_.cid)
           .then(res => {
             this.instances = res.data
           })

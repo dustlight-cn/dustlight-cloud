@@ -4,14 +4,14 @@
     v-slot="{client,user,token}">
     {{ "", client_ = client, user_ = user, token_ = token }}
     <q-form class="q-gutter-sm" @submit="save">
-      <div style="max-width: 600px;margin: 0 auto">
-        <q-input :debounce="500" :loading="loading" :rules="rule.name" dense v-model="name" filled
+      <div >
+        <q-input style="max-width: 600px;margin: 0 auto" :debounce="500" :loading="loading" :rules="rule.name" dense v-model="name" filled
                  :placeholder="$appt('key')">
           <template v-slot:prepend>
             <q-icon name="key"/>
           </template>
         </q-input>
-        <div class="text-right">
+        <div style="max-width: 600px;margin: 0 auto" class="text-right">
           <q-toggle icon="settings" v-model="system" :label="$appt('system')"/>
         </div>
       </div>
