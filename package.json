@@ -30,8 +30,8 @@
     "vuex": "^4.0.1"
   },
   "devDependencies": {
-    "@dustlight/quasar-app-extension-auth-ext": "",
-    "@dustlight/quasar-app-extension-json-form": "^0.0.1-alpha-3",
+    "@dustlight/quasar-app-extension-auth-ext": "^0.0.3-alpha",
+    "@dustlight/quasar-app-extension-json-form": "^0.0.1-alpha-5",
     "@quasar/app": "^3.0.0",
     "@types/node": "^12.20.21"
   },

@@ -26,8 +26,8 @@
       <span class="text-caption">{{ task.id }}</span>
     </div>
 
-    <div class="q-pb-md" v-if="loading.task">
-      <q-spinner-gears size="4em"/>
+    <div class="q-pb-md text-center" v-if="loading.task">
+      <q-spinner-gears size="4em" color="primary"/>
     </div>
     <div class="q-pb-md text-subtitle1" v-else-if="task">
       {{ task.elementId }}
@@ -43,17 +43,22 @@
       </q-list>
     </div>
 
-    <div class="q-pb-md" v-if="loading.form">
-      <q-spinner-gears size="4em"/>
+    <div class="q-pb-md text-center" v-if="loading.form">
+      <q-spinner-gears size="4em" color="primary"/>
     </div>
-    <div class="q-pb-md" v-else-if="form">
-      <json-form ref="jsonForm" :schema="form.schema"/>
-    </div>
-    <div class="text-right" v-if="task">
-      <span class="text-caption text-grey" v-if="task.completedAt">{{ $moment(task.completedAt) }}</span>
-      <q-btn :loading="loading.complete" @click="complete" v-else-if="form" :label="$q.lang.label.ok" color="primary"/>
-    </div>
-
+    <q-form @submit="complete" v-else-if="form">
+      <div class="q-pb-md">
+        <json-form ref="jsonForm"
+                   :schema="form.schema"
+                   :formData="task.data"
+                   :uiSchema="form.additional ? form.additional.uiSchema : null"
+                   :readonly="task.completedAt != null && task.completedAt != undefined"/>
+      </div>
+      <div class="text-right" v-if="task">
+        <span class="text-caption text-grey" v-if="task.completedAt">{{ $moment(task.completedAt) }}</span>
+        <q-btn :loading="loading.complete" type="submit" v-else-if="form" :label="$q.lang.label.ok" color="primary"/>
+      </div>
+    </q-form>
   </client-required-adaptive-layout>
 </template>
 
@@ -115,7 +120,11 @@ export default {
         return
       this.loading.form = true
       this.formsApi.getLatestForm(formName, this.client_.cid)
-        .then(res => this.form = res.data)
+        .then(res => {
+          this.form = res.data
+          delete this.form.schema["$id"]
+          delete this.form.schema["$schema"]
+        })
         .catch(this.$throw)
         .finally(() => this.loading.form = false)
     },
