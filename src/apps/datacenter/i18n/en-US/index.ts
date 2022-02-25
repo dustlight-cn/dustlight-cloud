@@ -9,6 +9,11 @@ export default {
   formNameExists: "Form name already in use!",
   save: "Save",
 
+  selectForm: "Select From",
+  formNotFound: "Form not found!",
+  simpleSearch: "Simple Search",
+  advancedSearch: "Advanced Search",
+
   notEmpty: "Can not be empty!",
 
   menu:{
