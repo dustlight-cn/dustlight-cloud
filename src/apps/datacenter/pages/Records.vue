@@ -50,9 +50,7 @@
       </q-tab-panels>
     </div>
 
-    <div v-if="records">
-      <RecordTable :data="records.data" :form="form"/>
-    </div>
+    <RecordTable @request="onRequest" :records="records" :form="form" :loading="loading"/>
   </client-required-adaptive-layout>
 </template>
 
@@ -96,11 +94,19 @@ export default {
       searchMode: "simple",
       simpleQuery: "",
       loading: false,
-      page: 1,
-      size: 10,
+      pagination: {
+        sortBy: 'desc',
+        descending: false,
+        page: 1,
+        rowsPerPage: 1,
+        rowsNumber: 0
+      }
     }
   },
   watch: {
+    form() {
+      this.records = null
+    },
     formName() {
       let obj = this.cloneQuery()
       obj.form = this.formName
@@ -151,6 +157,14 @@ export default {
           this.formName = form.name
         })
     },
+    onRequest(props) {
+      if (this.searchMode = "simple") {
+        this.pagination.page = props.pagination.page
+        this.pagination.rowsPerPage = props.pagination.rowsPerPage
+        this.simpleSearch()
+      }
+      console.log(props)
+    },
     simpleSearch() {
       if (this.loading)
         return
@@ -158,10 +172,13 @@ export default {
       this.recordsApi.findRecords(this.formName,
         this.simpleQuery || "",
         this.orders,
-        this.page - 1,
-        this.size,
+        this.pagination.page - 1,
+        this.pagination.rowsPerPage,
         this.client_.cid, [])
-        .then(res => this.records = res.data)
+        .then(res => {
+          this.records = res.data
+          this.pagination.rowsNumber = res.data.count
+        })
         .catch(this.$throw)
         .finally(() => this.loading = false)
     }
