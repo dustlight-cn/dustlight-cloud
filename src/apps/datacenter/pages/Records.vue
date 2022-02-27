@@ -15,45 +15,47 @@
           <q-btn icon="search" flat round dense @click="selectForm"/>
         </template>
       </q-input>
+
+      <q-tabs
+        v-model="searchMode"
+        dense
+        active-color="primary"
+        indicator-color="primary"
+        align="justify"
+        narrow-indicator
+        no-caps
+      >
+        <q-tab name="simple" :label="$appt('simpleSearch')"/>
+        <q-tab name="advanced" :label="$appt('advancedSearch')"/>
+      </q-tabs>
     </div>
 
     <RecordTable @request="onRequest" :records="records" :form="form" :loading="loading">
-      <q-space/>
-      <div>
-        <q-tabs
-          v-model="searchMode"
-          dense
-          active-color="primary"
-          indicator-color="primary"
-          align="justify"
-          narrow-indicator
-          no-caps
-        >
-          <q-tab name="simple" :label="$appt('simpleSearch')"/>
-          <q-tab name="advanced" :label="$appt('advancedSearch')"/>
-        </q-tabs>
-        <q-tab-panels v-model="searchMode" animated>
-          <q-tab-panel name="simple">
-            <q-input style="max-width: 600px;margin: 0 auto" v-model="simpleQuery"
-                     filled
-                     @keydown.enter="simpleSearch"
-                     clearable dense>
-              <template v-slot:prepend>
-                <q-icon name="search"/>
-              </template>
-              <template v-slot:after>
-                <q-btn :disable="!form" :loading="loading" color="primary" :label="$q.lang.label.search"
-                       @click="simpleSearch"/>
-              </template>
-            </q-input>
-          </q-tab-panel>
+      <q-tab-panels v-model="searchMode" animated>
+        <q-tab-panel name="simple">
+          <q-input style="max-width: 600px;margin: 0 auto" v-model="simpleQuery"
+                   filled
+                   @keydown.enter="simpleSearch"
+                   clearable dense>
+            <template v-slot:prepend>
+              <q-icon name="search"/>
+            </template>
+            <template v-slot:after>
+              <q-btn :disable="!form" :loading="loading" color="primary" :label="$q.lang.label.search"
+                     @click="simpleSearch"/>
+            </template>
+          </q-input>
+        </q-tab-panel>
 
-          <q-tab-panel name="advanced">
-            -
-          </q-tab-panel>
+        <q-tab-panel name="advanced">
+          <advanced-filter style="max-width: 600px" :form="form" v-model="filters"/>
+          <div class="text-right">
+            <q-btn :disable="!form" :loading="loading" color="primary" :label="$q.lang.label.search"
+                   @click="advancedSearch"/>
+          </div>
+        </q-tab-panel>
 
-        </q-tab-panels>
-      </div>
+      </q-tab-panels>
     </RecordTable>
   </client-required-adaptive-layout>
 </template>
@@ -62,10 +64,11 @@
 import ClientRequiredAdaptiveLayout from "../../../components/container/ClientRequiredAdaptiveLayout";
 import FormSelector from "../components/FormSelector";
 import RecordTable from "../components/RecordTable";
+import AdvancedFilter from "../components/AdvancedFilter";
 
 export default {
   name: "Records",
-  components: {RecordTable, ClientRequiredAdaptiveLayout},
+  components: {AdvancedFilter, RecordTable, ClientRequiredAdaptiveLayout},
   data() {
     return {
       client_: null,
@@ -97,6 +100,7 @@ export default {
       orders: [],
       searchMode: "simple",
       simpleQuery: "",
+      filters: [],
       loading: false,
       pagination: {
         sortBy: null,
@@ -162,15 +166,45 @@ export default {
         })
     },
     onRequest(props) {
-      if (this.searchMode = "simple") {
-        if (props.pagination.sortBy)
-          this.orders = [(props.pagination.descending ? "-" : "") + (props.pagination.sortBy)]
-        else
-          this.orders = []
-        this.pagination.page = props.pagination.page
-        this.pagination.rowsPerPage = props.pagination.rowsPerPage
+      if (props.pagination.sortBy)
+        this.orders = [(props.pagination.descending ? "-" : "") + (props.pagination.sortBy)]
+      else
+        this.orders = []
+      this.pagination.page = props.pagination.page
+      this.pagination.rowsPerPage = props.pagination.rowsPerPage
+      if (this.searchMode == "simple") {
         this.simpleSearch()
+      } else {
+        this.advancedSearch()
       }
+    },
+    advancedSearch() {
+      if (this.loading)
+        return
+      let computedFilters = []
+      this.filters.forEach(filter => {
+        try {
+          let v = JSON.parse(filter.value)
+          computedFilters.push({
+            name: filter.name, opt: filter.opt, value: v
+          })
+        } catch (e) {
+
+        }
+      })
+      this.loading = true
+      this.recordsApi.findRecords(this.formName,
+        "",
+        this.orders,
+        this.pagination.page - 1,
+        this.pagination.rowsPerPage,
+        this.client_.cid, computedFilters)
+        .then(res => {
+          this.records = res.data
+          this.pagination.rowsNumber = res.data.count
+        })
+        .catch(this.$throw)
+        .finally(() => this.loading = false)
     },
     simpleSearch() {
       if (this.loading)

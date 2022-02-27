@@ -123,7 +123,7 @@ function computeColumn(form, $moment) {
     label: 'ID',
     align: 'center',
     field: "id",
-    sortable: true
+    sortable: false
   })
   if (form) {
     function getPathData(root, path) {
