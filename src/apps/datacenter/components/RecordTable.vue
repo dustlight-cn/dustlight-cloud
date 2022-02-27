@@ -1,28 +1,50 @@
 <template>
-  <div class="q-pa-md">
-    {{ pagination }}
-    <q-table
-      title="Treats"
-      :rows="data"
-      :columns="columns"
-      :pagination="pagination"
-      :loading="loading"
-      @request="onRequest"
-      row-key="id"
-    />
-    <GGBOY/>
-  </div>
+  <q-table
+    flat
+    bordered
+    color="primary"
+    :rows="data"
+    :columns="columns"
+    :visible-columns="visible"
+    v-model:pagination="pagination"
+    :rows-per-page-options="[5,10,20,50,100]"
+    :loading="loading"
+    @request="onRequest"
+    row-key="id"
+  >
+    <template v-slot:top="props">
+      <slot/>
+      <q-space/>
+      <q-btn v-if="columns" round flat icon="visibility">
+        <q-menu>
+          <q-card>
+            <q-list>
+              <q-item dense v-ripple v-for="(col,index) in columns" :key="index" tag="label">
+                <q-item-section>
+                  <q-item-label>
+                    {{ col.label }}
+                  </q-item-label>
+                </q-item-section>
+                <q-item-section side>
+                  <q-toggle :disable="col.required" color="primary" :val="col.name" v-model="visible"/>
+                </q-item-section>
+              </q-item>
+            </q-list>
+          </q-card>
+        </q-menu>
+      </q-btn>
+    </template>
+  </q-table>
 </template>
 
 <script>
 import {Form, QueryResultRecord} from "@dustlight/datacenter-client-axios-js";
-import {ref, watch, getCurrentInstance, defineEmits} from 'vue';
-import GGBOY from "./GGBOY";
+import {ref, watch, getCurrentInstance} from 'vue';
 
 
 export default {
   name: "RecordTable",
-  components: {GGBOY},
+  components: {},
   props: {
     records: QueryResultRecord,
     form: Form,
@@ -35,15 +57,18 @@ export default {
     let $moment = proxy.$moment
     let columns = ref(computeColumn(props.form, $moment))
     let pagination = ref({
-      sortBy: 'desc',
+      sortBy: null,
       descending: false,
       page: 1,
-      rowsPerPage: 1,
+      rowsPerPage: 10,
       rowsNumber: 0
     })
     let data = ref([])
+    let visible = ref([...getColumVisible(columns.value)])
 
     function onRequest(props) {
+      pagination.value.sortBy = props.pagination.sortBy
+      pagination.value.descending = props.pagination.descending
       pagination.value.page = props.pagination.page
       pagination.value.rowsPerPage = props.pagination.rowsPerPage
       proxy.$emit("request", props)
@@ -51,6 +76,7 @@ export default {
 
     let w1 = watch(() => props.form, (val) => {
       columns.value = computeColumn(val, $moment)
+      visible.value = getColumVisible(columns.value)
     })
 
     let w2 = watch(() => props.records, (val) => {
@@ -67,11 +93,22 @@ export default {
       columns,
       pagination,
       data,
+      visible,
       w1,
       w2,
       onRequest
     }
   }
+}
+
+function getColumVisible(column) {
+  if (!column || column.length == 0)
+    return []
+  let arr = []
+  column.forEach(val => {
+    arr.push(val.name)
+  })
+  return arr;
 }
 
 /**
@@ -86,14 +123,6 @@ function computeColumn(form, $moment) {
     label: 'ID',
     align: 'center',
     field: "id",
-    sortable: true
-  })
-  result.push({
-    name: 'formVersion',
-    required: true,
-    label: 'Version',
-    align: 'center',
-    field: "formVersion",
     sortable: true
   })
   if (form) {
@@ -138,21 +167,30 @@ function computeColumn(form, $moment) {
       }
       return [{
         name: namePrefix,
-        required: true,
+        required: false,
         label: labelPrefix,
         align: 'center',
         field: row => getPathData(row.data, path),
         format: val => format(node, val),
-        sortable: true
+        sortable: ['number', 'integer'].includes(node.type) || node.type == 'string' && ['data', 'time', 'date-time'].includes(node.format)
       }]
     }
 
-    let children = computeSchema(form.schema, [], "", "")
+    let children = computeSchema(form.schema, [], "data", "")
     result.push(...children)
   }
+
+  result.push({
+    name: 'formVersion',
+    required: false,
+    label: 'Version',
+    align: 'center',
+    field: "formVersion",
+    sortable: true
+  })
   result.push({
     name: 'createdAt',
-    required: true,
+    required: false,
     label: 'CreatedAt',
     align: 'center',
     field: "createdAt",
@@ -161,7 +199,7 @@ function computeColumn(form, $moment) {
   })
   result.push({
     name: 'updatedAt',
-    required: true,
+    required: false,
     label: 'UpdatedAt',
     align: 'center',
     field: "updatedAt",

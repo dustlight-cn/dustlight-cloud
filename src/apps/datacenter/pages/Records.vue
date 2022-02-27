@@ -15,42 +15,46 @@
           <q-btn icon="search" flat round dense @click="selectForm"/>
         </template>
       </q-input>
-      <q-tabs
-        v-model="searchMode"
-        dense
-        active-color="primary"
-        indicator-color="primary"
-        align="justify"
-        narrow-indicator
-        no-caps
-      >
-        <q-tab name="simple" :label="$appt('simpleSearch')"/>
-        <q-tab name="advanced" :label="$appt('advancedSearch')"/>
-      </q-tabs>
-      <q-tab-panels v-model="searchMode" animated>
-        <q-tab-panel name="simple">
-          <q-input style="max-width: 600px;margin: 0 auto" v-model="simpleQuery"
-                   filled
-                   @keydown.enter="simpleSearch"
-                   clearable dense>
-            <template v-slot:prepend>
-              <q-icon name="search"/>
-            </template>
-            <template v-slot:after>
-              <q-btn :disable="!form" :loading="loading" color="primary" :label="$q.lang.label.search"
-                     @click="simpleSearch"/>
-            </template>
-          </q-input>
-        </q-tab-panel>
-
-        <q-tab-panel name="advanced">
-          -
-        </q-tab-panel>
-
-      </q-tab-panels>
     </div>
 
-    <RecordTable @request="onRequest" :records="records" :form="form" :loading="loading"/>
+    <RecordTable @request="onRequest" :records="records" :form="form" :loading="loading">
+      <q-space/>
+      <div>
+        <q-tabs
+          v-model="searchMode"
+          dense
+          active-color="primary"
+          indicator-color="primary"
+          align="justify"
+          narrow-indicator
+          no-caps
+        >
+          <q-tab name="simple" :label="$appt('simpleSearch')"/>
+          <q-tab name="advanced" :label="$appt('advancedSearch')"/>
+        </q-tabs>
+        <q-tab-panels v-model="searchMode" animated>
+          <q-tab-panel name="simple">
+            <q-input style="max-width: 600px;margin: 0 auto" v-model="simpleQuery"
+                     filled
+                     @keydown.enter="simpleSearch"
+                     clearable dense>
+              <template v-slot:prepend>
+                <q-icon name="search"/>
+              </template>
+              <template v-slot:after>
+                <q-btn :disable="!form" :loading="loading" color="primary" :label="$q.lang.label.search"
+                       @click="simpleSearch"/>
+              </template>
+            </q-input>
+          </q-tab-panel>
+
+          <q-tab-panel name="advanced">
+            -
+          </q-tab-panel>
+
+        </q-tab-panels>
+      </div>
+    </RecordTable>
   </client-required-adaptive-layout>
 </template>
 
@@ -95,10 +99,10 @@ export default {
       simpleQuery: "",
       loading: false,
       pagination: {
-        sortBy: 'desc',
+        sortBy: null,
         descending: false,
         page: 1,
-        rowsPerPage: 1,
+        rowsPerPage: 10,
         rowsNumber: 0
       }
     }
@@ -159,11 +163,14 @@ export default {
     },
     onRequest(props) {
       if (this.searchMode = "simple") {
+        if (props.pagination.sortBy)
+          this.orders = [(props.pagination.descending ? "-" : "") + (props.pagination.sortBy)]
+        else
+          this.orders = []
         this.pagination.page = props.pagination.page
         this.pagination.rowsPerPage = props.pagination.rowsPerPage
         this.simpleSearch()
       }
-      console.log(props)
     },
     simpleSearch() {
       if (this.loading)
