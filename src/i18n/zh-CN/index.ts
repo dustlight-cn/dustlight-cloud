@@ -9,7 +9,7 @@ export default {
   services: "云服务",
 
   signIn: "登录",
-  signOut: "退出登录",
+  signOut: "注销",
   signOutSuccess: "成功退出登录",
 
   unauthorizedTips: "要查看此内容，请登录您的账号",
